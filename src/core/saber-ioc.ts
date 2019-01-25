@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: AK-12
- * @Last Modified time: 2019-01-25 10:20:22
+ * @Last Modified time: 2019-01-25 10:36:30
  */
 import 'reflect-metadata'
 /**
@@ -23,19 +23,19 @@ const DEP = 'saber_dep'
  * return a META key.
  * @param id
  */
-export const MetaKey = (id: string) => `${META}:${id}`
+const MetaKey = (id: string) => `${META}:${id}`
 /**
  * # DepKey
  * return a DEP key.
  * @param id
  */
-export const DepKey = (id: string) => `${DEP}:${id}`
+const DepKey = (id: string) => `${DEP}:${id}`
 /**
  * ## Constructor
  * class type.
  * @exports
  */
-export type Constructor<T> = { new (...args: Array<any>): T }
+type Constructor<T> = { new (...args: Array<any>): T }
 /**
  * # Injectable
  * register the target to metaStore.

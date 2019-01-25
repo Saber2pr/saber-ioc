@@ -1,22 +1,10 @@
 import 'reflect-metadata';
 /**
- * # MetaKey
- * return a META key.
- * @param id
- */
-export declare const MetaKey: (id: string) => string;
-/**
- * # DepKey
- * return a DEP key.
- * @param id
- */
-export declare const DepKey: (id: string) => string;
-/**
  * ## Constructor
  * class type.
  * @exports
  */
-export declare type Constructor<T> = {
+type Constructor<T> = {
     new (...args: Array<any>): T;
 };
 /**
@@ -72,3 +60,4 @@ export declare namespace SaFactory {
  * @param {Constructor<T>} target
  */
 export declare function Bootstrap<T>(target: Constructor<T>): void;
+export {};
