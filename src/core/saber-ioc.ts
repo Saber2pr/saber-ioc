@@ -91,11 +91,11 @@ export namespace SaFactory {
       Reflect.getMetadata(key, constructor)
     )
     if (dependencies) {
-      const depInstances = dependencies.map(deps => {
-        if (deps.length) {
-          return create(<any>deps)
+      const depInstances = dependencies.map(dependence => {
+        if (dependence.length) {
+          return create(<any>dependence)
         } else {
-          return new (<any>deps)()
+          return new (<any>dependence)()
         }
       })
       return new constructor(...depInstances.reverse())

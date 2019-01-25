@@ -1,8 +1,8 @@
 # saber-ioc
 
-[![npm](https://img.shields.io/npm/v/saber-ioc.svg)](https://www.npmjs.com/package/saber-ioc)
+[![npm](https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue)](https://www.npmjs.com/package/saber-ioc)
 
-> an simple ioc container for classes
+> a simple ioc container for classes
 
 ```bash
 # from npm
@@ -11,6 +11,8 @@ npm install saber-ioc
 # from github
 git clone https://github.com/Saber2pr/saber-ioc.git
 ```
+
+## examples
 
 ```ts
 import { Injectable } from '../../core/saber-ioc'
@@ -95,11 +97,9 @@ npm install
 ```
 
 ```bash
-# auto compile to commonjs
 npm start
 
-# auto compile to es5
-npm run dev
+npm run test
 
 ```
 
@@ -111,10 +111,6 @@ npm run dev
 
 > you should write ts in /src
 
-> ts -(tsc)-> commonjs -(webpack)-> es5
-
 > you should make test in /src/test
-
-> export your core in /src/index.ts!
 
 ---
