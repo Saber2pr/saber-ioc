@@ -122,9 +122,9 @@ export namespace SaFactory {
   ): void {
     const props = Object.keys(constructor.prototype)
     if (props.some(value => value === 'main')) {
-      create(constructor)[mainMethod || 'main']()
+      create(constructor)['main']()
     } else {
-      create(constructor)[props[0]]()
+      create(constructor)[mainMethod || props[0]]()
     }
   }
 }

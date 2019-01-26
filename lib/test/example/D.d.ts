@@ -4,5 +4,5 @@ export declare class D {
     B: IB;
     C: IC;
     constructor(A: IA, B: IB, C: IC);
-    main(): void;
+    test(): void;
 }

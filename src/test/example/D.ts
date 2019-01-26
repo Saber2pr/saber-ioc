@@ -1,4 +1,4 @@
-import { Bootstrap, Inject } from '../../core/saber-ioc'
+import { Bootstrap, Inject, SaFactory } from '../../core/saber-ioc'
 import { IA, IB, IC } from './type'
 
 @Bootstrap
@@ -8,7 +8,7 @@ export class D {
     @Inject('B') public B: IB,
     @Inject('C') public C: IC
   ) {}
-  main() {
+  test() {
     console.log(this.A.getName())
     console.log(this.B.getName())
     console.log(this.C.getName())
