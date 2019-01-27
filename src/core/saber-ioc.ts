@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: AK-12
- * @Last Modified time: 2019-01-27 11:27:19
+ * @Last Modified time: 2019-01-27 12:04:21
  */
 import 'reflect-metadata'
 /**
@@ -127,10 +127,21 @@ export namespace SaFactory {
       create(constructor)[mainMethod || props[0]]()
     }
   }
+  /**
+   * # Container
+   * `create an ioc container.`
+   * @export
+   * @class Container
+   */
+  export class Container {
+    constructor(...Constructor: Constructor<any>[]) {
+      Constructor.forEach(constructor => create(constructor))
+    }
+  }
 }
 /**
  * ## Bootstrap
- * `main class`
+ * `tag`:`main class`
  *
  * @export
  * @template T

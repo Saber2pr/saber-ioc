@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * class type.
  * @exports
  */
-declare type Constructor<T> = {
+type Constructor<T> = {
     new (...args: Array<any>): T;
 };
 /**
@@ -50,10 +50,19 @@ export declare namespace SaFactory {
      */
     function BootStrap<T>(constructor: Constructor<T>): void;
     function BootStrap<T>(constructor: Constructor<T>, mainMethod: string): void;
+    /**
+     * # Container
+     * `create an ioc container.`
+     * @export
+     * @class Container
+     */
+    class Container {
+        constructor(...Constructor: Constructor<any>[]);
+    }
 }
 /**
  * ## Bootstrap
- * `main class`
+ * `tag`:`main class`
  *
  * @export
  * @template T

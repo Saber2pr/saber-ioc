@@ -54,17 +54,18 @@ export class C implements IC {
 ```
 
 ```ts
-import { Bootstrap, Inject } from '../../core/saber-ioc'
+import { Bootstrap, Inject, Injectable } from '../../core/saber-ioc'
 import { IA, IB, IC } from './type'
 
 @Bootstrap
+@Injectable()
 export class D {
   constructor(
     @Inject('A') public A: IA,
     @Inject('B') public B: IB,
     @Inject('C') public C: IC
   ) {}
-  main() {
+  test() {
     console.log(this.A.getName())
     console.log(this.B.getName())
     console.log(this.C.getName())
@@ -73,11 +74,14 @@ export class D {
 ```
 
 ```ts
-// dependencies
-import './example/A'
-import './example/B'
-import './example/C'
-import './example/D'
+// create an ioc container.
+import { SaFactory } from '../core/saber-ioc'
+import { A } from './example/A'
+import { B } from './example/B'
+import { C } from './example/C'
+import { D } from './example/D'
+
+new SaFactory.Container(C, D, A, B)
 
 // console
 /**

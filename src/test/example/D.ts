@@ -1,7 +1,8 @@
-import { Bootstrap, Inject } from '../../core/saber-ioc'
+import { Bootstrap, Inject, Injectable } from '../../core/saber-ioc'
 import { IA, IB, IC } from './type'
 
 @Bootstrap
+@Injectable()
 export class D {
   constructor(
     @Inject('A') public A: IA,
