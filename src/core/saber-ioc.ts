@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: AK-12
- * @Last Modified time: 2019-01-27 12:04:21
+ * @Last Modified time: 2019-01-27 13:22:17
  */
 import 'reflect-metadata'
 /**
@@ -60,12 +60,7 @@ export function Injectable(id?: string): ClassDecorator {
  * @returns {ParameterDecorator}
  */
 export function Inject(id: string): ParameterDecorator {
-  return target =>
-    Reflect.defineMetadata(
-      DepKey(id),
-      Reflect.getMetadata(MetaKey(id), MetaStore),
-      target
-    )
+  return target => Reflect.defineMetadata(DepKey(id), MetaKey(id), target)
 }
 /**
  * # SaFactory
@@ -84,11 +79,11 @@ export namespace SaFactory {
    * @returns {T}
    */
   export function create<T>(constructor: Constructor<T>): T {
-    const depKeys = Reflect.getMetadataKeys(constructor).filter(
-      key => (<string>key).indexOf(DEP) !== -1
-    )
+    const depKeys = Reflect.getMetadataKeys(constructor)
+      .filter(key => (<string>key).indexOf(DEP) !== -1)
+      .map(key => key.replace(DEP, META))
     const dependencies: Array<Function> = depKeys.map(key =>
-      Reflect.getMetadata(key, constructor)
+      Reflect.getMetadata(key, MetaStore)
     )
     const depInstances = dependencies.map(dependence => {
       if (dependence.length) {
