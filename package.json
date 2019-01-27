@@ -1,6 +1,6 @@
 {
   "name": "saber-ioc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "a simple ioc container for classes",
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
   "keywords": [
     "ioc",
     "aop",
-    "container"
+    "container",
+    "typescript",
+    "reflect"
   ],
   "devDependencies": {
     "typescript": "^3.2.1"

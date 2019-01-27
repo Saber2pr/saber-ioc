@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * class type.
  * @exports
  */
-declare type Constructor<T> = {
+type Constructor<T> = {
     new (...args: Array<any>): T;
 };
 /**
@@ -34,7 +34,7 @@ export declare function Inject(id: string): ParameterDecorator;
 export declare function Bootstrap<T>(target: Constructor<T>): void;
 /**
  * # SaFactory
- * ## An simple ioc container for classes
+ * ## A simple ioc container for classes
  * 1. ensure `tsconfig.json` : `"emitDecoratorMetadata": true`.
  * 2. ensure `tsconfig.json` : `"experimentalDecorators": true`.
  * @exports
