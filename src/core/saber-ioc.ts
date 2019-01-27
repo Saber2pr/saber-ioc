@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: AK-12
- * @Last Modified time: 2019-01-25 10:36:30
+ * @Last Modified time: 2019-01-27 11:27:19
  */
 import 'reflect-metadata'
 /**
@@ -84,7 +84,7 @@ export namespace SaFactory {
    * @returns {T}
    */
   export function create<T>(constructor: Constructor<T>): T {
-    const depKeys = Reflect.getOwnMetadataKeys(constructor).filter(
+    const depKeys = Reflect.getMetadataKeys(constructor).filter(
       key => (<string>key).indexOf(DEP) !== -1
     )
     const dependencies: Array<Function> = depKeys.map(key =>
