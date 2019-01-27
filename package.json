@@ -1,6 +1,6 @@
 {
   "name": "saber-ioc",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "a simple ioc container for classes",
   "repository": {
     "type": "git",

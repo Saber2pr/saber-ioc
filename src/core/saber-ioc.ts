@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: AK-12
- * @Last Modified time: 2019-01-27 13:22:17
+ * @Last Modified time: 2019-01-27 22:10:41
  */
 import 'reflect-metadata'
 /**
@@ -142,6 +142,10 @@ export namespace SaFactory {
    */
   export class Container {
     private main: any
+    private ERROR = {
+      NOTFOUND_MAINCLASS:
+        'main class not found. try to set a `Bootstrap` decorator to a class.'
+    }
     constructor(...Constructor: Constructor<any>[]) {
       Constructor.forEach(constructor => {
         if (Reflect.hasMetadata(MAIN, constructor)) {
@@ -159,7 +163,11 @@ export namespace SaFactory {
      * @memberof Container
      */
     pull<T = any>() {
-      return create(this.main) as T
+      if (this.main) {
+        return create(this.main) as T
+      } else {
+        throw new Error(this.ERROR.NOTFOUND_MAINCLASS)
+      }
     }
     /**
      * run
@@ -168,7 +176,11 @@ export namespace SaFactory {
      * @memberof Container
      */
     run() {
-      SaFactory.BootStrap(this.main)
+      if (this.main) {
+        SaFactory.BootStrap(this.main)
+      } else {
+        throw new Error(this.ERROR.NOTFOUND_MAINCLASS)
+      }
     }
   }
 }

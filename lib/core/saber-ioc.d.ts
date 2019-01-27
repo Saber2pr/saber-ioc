@@ -67,6 +67,7 @@ export declare namespace SaFactory {
      */
     class Container {
         private main;
+        private ERROR;
         constructor(...Constructor: Constructor<any>[]);
         /**
          * pull
