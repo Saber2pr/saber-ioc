@@ -74,15 +74,23 @@ export class D {
 ```
 
 ```ts
-// create an ioc container.
 import { SaFactory } from '../core/saber-ioc'
-import { A } from './example/A'
-import { B } from './example/B'
 import { C } from './example/C'
+import { A } from './example/A'
 import { D } from './example/D'
+import { B } from './example/B'
 
-new SaFactory.Container(C, D, A, B)
+let container = new SaFactory.Container(C, A, D, B)
+container.run()
+// console
+/**
+ * A
+ * AB
+ * ABC
+ */
+let main: D = container.pull()
 
+main.test()
 // console
 /**
  * A
