@@ -144,24 +144,34 @@ export namespace SaFactory {
    * @class Container
    */
   export class Container {
-    private result: any
+    private main: any
     constructor(...Constructor: Constructor<any>[]) {
       Constructor.forEach(constructor => {
-        create(constructor)
         if (Reflect.hasMetadata(MAIN, constructor)) {
-          this.result = SaFactory.BootStrap(constructor)
+          this.main = constructor
+        } else {
+          create(constructor)
         }
       })
     }
     /**
      * pull
-     * `get the main class`
+     * `get the main class instance`
      *
      * @returns
      * @memberof Container
      */
     pull<T = any>() {
-      return this.result as T
+      return create(this.main) as T
+    }
+    /**
+     * run
+     * `run the Container`
+     *
+     * @memberof Container
+     */
+    run() {
+      SaFactory.BootStrap(this.main)
     }
   }
 }

@@ -67,16 +67,23 @@ export declare namespace SaFactory {
      * @class Container
      */
     class Container {
-        private result;
+        private main;
         constructor(...Constructor: Constructor<any>[]);
         /**
          * pull
-         * `get the main class`
+         * `get the main class instance`
          *
          * @returns
          * @memberof Container
          */
         pull<T = any>(): T;
+        /**
+         * run
+         * `run the Container`
+         *
+         * @memberof Container
+         */
+        run(): void;
     }
 }
 export {};
