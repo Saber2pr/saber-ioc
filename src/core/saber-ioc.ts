@@ -116,21 +116,25 @@ export namespace SaFactory {
    * @export
    * @template T
    * @param {Constructor<T>} constructor
+   * @returns {T}
    */
-  export function BootStrap<T>(constructor: Constructor<T>): void
+  export function BootStrap<T>(constructor: Constructor<T>): T
   export function BootStrap<T>(
     constructor: Constructor<T>,
     mainMethod: string
-  ): void
+  ): T
   export function BootStrap<T>(
     constructor: Constructor<T>,
     mainMethod?: string
-  ): void {
+  ): T {
     const props = Object.keys(constructor.prototype)
+    const main = create(constructor)
     if (props.some(value => value === 'main')) {
-      create(constructor)['main']()
+      main['main']()
+      return main
     } else {
-      create(constructor)[mainMethod || props[0]]()
+      main[mainMethod || props[0]]()
+      return main
     }
   }
   /**
@@ -140,13 +144,24 @@ export namespace SaFactory {
    * @class Container
    */
   export class Container {
+    private result: any
     constructor(...Constructor: Constructor<any>[]) {
       Constructor.forEach(constructor => {
         create(constructor)
         if (Reflect.hasMetadata(MAIN, constructor)) {
-          SaFactory.BootStrap(constructor)
+          this.result = SaFactory.BootStrap(constructor)
         }
       })
+    }
+    /**
+     * pull
+     * `get the main class`
+     *
+     * @returns
+     * @memberof Container
+     */
+    pull<T = any>() {
+      return this.result as T
     }
   }
 }
