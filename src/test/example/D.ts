@@ -1,4 +1,4 @@
-import { Bootstrap, Inject, Injectable } from '../../core/saber-ioc'
+import { Inject, Injectable, Bootstrap } from '../../core/saber-ioc'
 import { IA, IB, IC } from './type'
 
 @Bootstrap

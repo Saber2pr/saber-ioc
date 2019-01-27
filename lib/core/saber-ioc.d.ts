@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * class type.
  * @exports
  */
-type Constructor<T> = {
+declare type Constructor<T> = {
     new (...args: Array<any>): T;
 };
 /**
@@ -23,6 +23,15 @@ export declare function Injectable(id?: string): ClassDecorator;
  * @returns {ParameterDecorator}
  */
 export declare function Inject(id: string): ParameterDecorator;
+/**
+ * ## Bootstrap
+ * `tag`:`main class`
+ *
+ * @export
+ * @template T
+ * @param {Constructor<T>} target
+ */
+export declare function Bootstrap<T>(target: Constructor<T>): void;
 /**
  * # SaFactory
  * ## An simple ioc container for classes
@@ -60,13 +69,4 @@ export declare namespace SaFactory {
         constructor(...Constructor: Constructor<any>[]);
     }
 }
-/**
- * ## Bootstrap
- * `tag`:`main class`
- *
- * @export
- * @template T
- * @param {Constructor<T>} target
- */
-export declare function Bootstrap<T>(target: Constructor<T>): void;
 export {};

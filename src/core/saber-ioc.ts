@@ -19,6 +19,10 @@ const META = 'saber_meta'
  */
 const DEP = 'saber_dep'
 /**
+ *# MAIN
+ */
+const MAIN = 'saber_main'
+/**
  * # MetaKey
  * return a META key.
  * @param id
@@ -61,6 +65,17 @@ export function Injectable(id?: string): ClassDecorator {
  */
 export function Inject(id: string): ParameterDecorator {
   return target => Reflect.defineMetadata(DepKey(id), MetaKey(id), target)
+}
+/**
+ * ## Bootstrap
+ * `tag`:`main class`
+ *
+ * @export
+ * @template T
+ * @param {Constructor<T>} target
+ */
+export function Bootstrap<T>(target: Constructor<T>) {
+  Reflect.defineMetadata(MAIN, '', target)
 }
 /**
  * # SaFactory
@@ -126,18 +141,12 @@ export namespace SaFactory {
    */
   export class Container {
     constructor(...Constructor: Constructor<any>[]) {
-      Constructor.forEach(constructor => create(constructor))
+      Constructor.forEach(constructor => {
+        create(constructor)
+        if (Reflect.hasMetadata(MAIN, constructor)) {
+          SaFactory.BootStrap(constructor)
+        }
+      })
     }
   }
-}
-/**
- * ## Bootstrap
- * `tag`:`main class`
- *
- * @export
- * @template T
- * @param {Constructor<T>} target
- */
-export function Bootstrap<T>(target: Constructor<T>) {
-  SaFactory.BootStrap(target)
 }
