@@ -10,4 +10,15 @@ container.run()
 let main: D = container.pull()
 
 main.test()
+
+@SaFactory.BootStrap
+class Test {
+  boot() {
+    console.log('test')
+  }
+  main() {
+    console.log('sa')
+  }
+}
+
 export function test_saber_ioc() {}

@@ -56,10 +56,9 @@ export declare namespace SaFactory {
      * @export
      * @template T
      * @param {Constructor<T>} constructor
-     * @returns {T}
      */
-    function BootStrap<T>(constructor: Constructor<T>): T;
-    function BootStrap<T>(constructor: Constructor<T>, mainMethod: string): T;
+    function BootStrap<T>(constructor: Constructor<T>): void;
+    function BootStrap<T>(constructor: Constructor<T>, mainMethod: string): void;
     /**
      * # Container
      * `create an ioc container.`

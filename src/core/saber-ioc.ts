@@ -116,25 +116,22 @@ export namespace SaFactory {
    * @export
    * @template T
    * @param {Constructor<T>} constructor
-   * @returns {T}
    */
-  export function BootStrap<T>(constructor: Constructor<T>): T
+  export function BootStrap<T>(constructor: Constructor<T>): void
   export function BootStrap<T>(
     constructor: Constructor<T>,
     mainMethod: string
-  ): T
+  ): void
   export function BootStrap<T>(
     constructor: Constructor<T>,
     mainMethod?: string
-  ): T {
+  ): void {
     const props = Object.keys(constructor.prototype)
     const main = create(constructor)
     if (props.some(value => value === 'main')) {
       main['main']()
-      return main
     } else {
       main[mainMethod || props[0]]()
-      return main
     }
   }
   /**
