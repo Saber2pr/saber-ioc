@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * class type.
  * @exports
  */
-type Constructor<T> = {
+declare type Constructor<T> = {
     new (...args: Array<any>): T;
 };
 /**

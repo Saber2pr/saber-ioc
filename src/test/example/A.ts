@@ -3,7 +3,6 @@ import { IA } from './type'
 
 @Injectable()
 export class A implements IA {
-  constructor() {}
   getName() {
     return 'A'
   }

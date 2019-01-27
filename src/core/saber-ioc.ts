@@ -90,18 +90,14 @@ export namespace SaFactory {
     const dependencies: Array<Function> = depKeys.map(key =>
       Reflect.getMetadata(key, constructor)
     )
-    if (dependencies) {
-      const depInstances = dependencies.map(dependence => {
-        if (dependence.length) {
-          return create(<any>dependence)
-        } else {
-          return new (<any>dependence)()
-        }
-      })
-      return new constructor(...depInstances.reverse())
-    } else {
-      return new constructor()
-    }
+    const depInstances = dependencies.map(dependence => {
+      if (dependence.length) {
+        return create(<any>dependence)
+      } else {
+        return new (<any>dependence)()
+      }
+    })
+    return new constructor(...depInstances.reverse())
   }
   /**
    * # BootStrap
