@@ -12,14 +12,12 @@ import 'reflect-metadata'
 const MetaStore = {}
 /**
  * # META
+ * `meta token`
  */
 const META = 'saber_meta'
 /**
- * # DEP
- */
-const DEP = 'saber_dep'
-/**
- *# MAIN
+ * # MAIN
+ * `main class tag`
  */
 const MAIN = 'saber_main'
 /**
@@ -29,20 +27,14 @@ const MAIN = 'saber_main'
  */
 const MetaKey = (id: string) => `${META}:${id}`
 /**
- * # DepKey
- * return a DEP key.
- * @param id
- */
-const DepKey = (id: string) => `${DEP}:${id}`
-/**
  * ## Constructor
  * class type.
  * @exports
  */
-type Constructor<T> = { new (...args: Array<any>): T }
+export type Constructor<T = any> = { new (...args: Array<any>): T }
 /**
  * # Injectable
- * register the target to metaStore.
+ * register the target to metaStore by id.
  * @export
  * @param {string} [id]
  * @returns {ClassDecorator}
@@ -58,13 +50,13 @@ export function Injectable(id?: string): ClassDecorator {
 }
 /**
  * # Inject
- * inject the metadata needed to target.
+ * set a metadata tag needed to target.
  * @export
  * @param {string} id
  * @returns {ParameterDecorator}
  */
 export function Inject(id: string): ParameterDecorator {
-  return target => Reflect.defineMetadata(DepKey(id), MetaKey(id), target)
+  return target => Reflect.defineMetadata(MetaKey(id), MetaKey(id), target)
 }
 /**
  * ## Bootstrap
@@ -75,7 +67,7 @@ export function Inject(id: string): ParameterDecorator {
  * @param {Constructor<T>} target
  */
 export function Bootstrap<T>(target: Constructor<T>) {
-  Reflect.defineMetadata(MAIN, '', target)
+  Reflect.defineMetadata(MAIN, undefined, target)
 }
 /**
  * # SaFactory
@@ -86,27 +78,20 @@ export function Bootstrap<T>(target: Constructor<T>) {
  */
 export namespace SaFactory {
   /**
-   * Factory
+   * create
    *
-   * @export
    * @template T
    * @param {Constructor<T>} constructor
    * @returns {T}
    */
-  export function create<T>(constructor: Constructor<T>): T {
-    const depKeys = Reflect.getMetadataKeys(constructor)
-      .filter(key => (<string>key).indexOf(DEP) !== -1)
-      .map(key => key.replace(DEP, META))
-    const dependencies: Array<Function> = depKeys.map(key =>
-      Reflect.getMetadata(key, MetaStore)
+  function create<T>(constructor: Constructor<T>): T {
+    const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
+      key => key.indexOf(META) !== -1
     )
-    const depInstances = dependencies.map(dependence => {
-      if (dependence.length) {
-        return create(<any>dependence)
-      } else {
-        return new (<any>dependence)()
-      }
-    })
+    const dependencies = depKeys.map(
+      key => <Constructor>Reflect.getMetadata(key, MetaStore)
+    )
+    const depInstances = dependencies.map(dependence => create(<any>dependence))
     return new constructor(...depInstances.reverse())
   }
   /**
@@ -135,39 +120,33 @@ export namespace SaFactory {
     }
   }
   /**
-   * # Container
-   * `create an ioc container.`
    * @export
    * @class Container
    */
   export class Container {
-    private main: any
-    private ERROR = {
-      NOTFOUND_MAINCLASS:
-        'main class not found. try to set a `Bootstrap` decorator to a class.'
-    }
-    constructor(...Constructor: Constructor<any>[]) {
-      Constructor.forEach(constructor => {
-        if (Reflect.hasMetadata(MAIN, constructor)) {
-          this.main = constructor
-        } else {
-          create(constructor)
-        }
-      })
+    private main: Constructor
+    /**
+     * # Container
+     * `create an ioc container.`
+     * @param {...Constructor[]} Constructors
+     * @memberof Container
+     */
+    constructor(...Constructors: Constructor[]) {
+      this.main =
+        Constructors.find(constructor =>
+          Reflect.hasMetadata(MAIN, constructor)
+        ) || Constructors[0]
     }
     /**
      * pull
      * `get the main class instance`
      *
-     * @returns
+     * @template T
+     * @returns {T}
      * @memberof Container
      */
-    pull<T = any>() {
-      if (this.main) {
-        return create(this.main) as T
-      } else {
-        throw new Error(this.ERROR.NOTFOUND_MAINCLASS)
-      }
+    pull<T = any>(): T {
+      return create(this.main)
     }
     /**
      * run
@@ -175,12 +154,16 @@ export namespace SaFactory {
      *
      * @memberof Container
      */
-    run() {
-      if (this.main) {
-        SaFactory.BootStrap(this.main)
-      } else {
-        throw new Error(this.ERROR.NOTFOUND_MAINCLASS)
-      }
+    run(): void
+    /**
+     * run
+     * `run the Constructor of the Container`
+     *
+     * @memberof Container
+     */
+    run(Constructor: Constructor): void
+    run(Constructor?: Constructor): void {
+      SaFactory.BootStrap(Constructor || this.main)
     }
   }
 }

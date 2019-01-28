@@ -4,12 +4,12 @@ import 'reflect-metadata';
  * class type.
  * @exports
  */
-declare type Constructor<T> = {
+export declare type Constructor<T = any> = {
     new (...args: Array<any>): T;
 };
 /**
  * # Injectable
- * register the target to metaStore.
+ * register the target to metaStore by id.
  * @export
  * @param {string} [id]
  * @returns {ClassDecorator}
@@ -17,7 +17,7 @@ declare type Constructor<T> = {
 export declare function Injectable(id?: string): ClassDecorator;
 /**
  * # Inject
- * inject the metadata needed to target.
+ * set a metadata tag needed to target.
  * @export
  * @param {string} id
  * @returns {ParameterDecorator}
@@ -41,15 +41,6 @@ export declare function Bootstrap<T>(target: Constructor<T>): void;
  */
 export declare namespace SaFactory {
     /**
-     * Factory
-     *
-     * @export
-     * @template T
-     * @param {Constructor<T>} constructor
-     * @returns {T}
-     */
-    function create<T>(constructor: Constructor<T>): T;
-    /**
      * # BootStrap
      * ### class should provide method - `main`
      *
@@ -60,20 +51,24 @@ export declare namespace SaFactory {
     function BootStrap<T>(constructor: Constructor<T>): void;
     function BootStrap<T>(constructor: Constructor<T>, mainMethod: string): void;
     /**
-     * # Container
-     * `create an ioc container.`
      * @export
      * @class Container
      */
     class Container {
         private main;
-        private ERROR;
-        constructor(...Constructor: Constructor<any>[]);
+        /**
+         * # Container
+         * `create an ioc container.`
+         * @param {...Constructor[]} Constructors
+         * @memberof Container
+         */
+        constructor(...Constructors: Constructor[]);
         /**
          * pull
          * `get the main class instance`
          *
-         * @returns
+         * @template T
+         * @returns {T}
          * @memberof Container
          */
         pull<T = any>(): T;
@@ -84,6 +79,12 @@ export declare namespace SaFactory {
          * @memberof Container
          */
         run(): void;
+        /**
+         * run
+         * `run the Constructor of the Container`
+         *
+         * @memberof Container
+         */
+        run(Constructor: Constructor): void;
     }
 }
-export {};
