@@ -56,7 +56,7 @@ export function Injectable(id?: string): ClassDecorator {
  * @returns {ParameterDecorator}
  */
 export function Inject(id: string): ParameterDecorator {
-  return target => Reflect.defineMetadata(MetaKey(id), MetaKey(id), target)
+  return target => Reflect.defineMetadata(MetaKey(id), undefined, target)
 }
 /**
  * ## Bootstrap
@@ -88,9 +88,7 @@ export namespace SaFactory {
     const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
       key => key.indexOf(META) !== -1
     )
-    const dependencies = depKeys.map(
-      key => <Constructor>Reflect.getMetadata(key, MetaStore)
-    )
+    const dependencies = depKeys.map(key => Reflect.getMetadata(key, MetaStore))
     const depInstances = dependencies.map(dependence => create(<any>dependence))
     return new constructor(...depInstances.reverse())
   }
