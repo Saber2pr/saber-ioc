@@ -5,6 +5,7 @@ import { IB, IA } from './type'
 export class B implements IB {
   constructor(@Inject('A') public A: IA) {}
   getName() {
+    this.A.setName('test')
     return this.A.getName() + 'B'
   }
 }

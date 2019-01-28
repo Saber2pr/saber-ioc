@@ -1,5 +1,6 @@
 export interface IA {
     getName(): string;
+    setName(v: string): any;
 }
 export interface IB {
     getName(): string;

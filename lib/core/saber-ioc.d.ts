@@ -27,11 +27,33 @@ export declare function Inject(id: string): ParameterDecorator;
  * ## Bootstrap
  * `tag`:`main class`
  *
+ * `provide`:`main()`
+ *
  * @export
  * @template T
  * @param {Constructor<T>} target
  */
 export declare function Bootstrap<T>(target: Constructor<T>): void;
+/**
+ * ## Singleton
+ * `tag`:`Singleton`
+ *
+ * `provide`:`instance`
+ *
+ * @export
+ * @param {*} target
+ */
+export declare function Singleton(target: any): void;
+/**
+ * ## SingletonLazy
+ * `tag`:`SingletonLazy`
+ *
+ * `provide`:`getInstance()`
+ *
+ * @export
+ * @param {*} target
+ */
+export declare function SingletonLazy(target: any): void;
 /**
  * # SaFactory
  * ## A simple ioc container for classes
@@ -62,7 +84,7 @@ export declare namespace SaFactory {
          * @param {...Constructor[]} Constructors
          * @memberof Container
          */
-        constructor(...Constructors: Constructor[]);
+        constructor(...Constructors: any[]);
         /**
          * pull
          * `get the main class instance`

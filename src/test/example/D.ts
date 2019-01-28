@@ -10,8 +10,8 @@ export class D {
     @Inject('C') public C: IC
   ) {}
   test() {
-    console.log(this.A.getName())
     console.log(this.B.getName())
+    console.log(this.A.getName())
     console.log(this.C.getName())
   }
 }

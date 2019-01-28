@@ -21,17 +21,24 @@ const META = 'saber_meta'
  */
 const MAIN = 'saber_main'
 /**
- * # MetaKey
- * return a META key.
- * @param id
+ * # CLASSTYPE
  */
-const MetaKey = (id: string) => `${META}:${id}`
+const CLASSTYPE = {
+  SINGLETON: 'saber_singleton',
+  SINGLETON_LAZY: 'saber_singleton_lazy'
+}
 /**
  * ## Constructor
  * class type.
  * @exports
  */
 export type Constructor<T = any> = { new (...args: Array<any>): T }
+/**
+ * # MetaKey
+ * return a META key.
+ * @param id
+ */
+const MetaKey = (id: string) => `${META}:${id}`
 /**
  * # Injectable
  * register the target to metaStore by id.
@@ -62,12 +69,53 @@ export function Inject(id: string): ParameterDecorator {
  * ## Bootstrap
  * `tag`:`main class`
  *
+ * `provide`:`main()`
+ *
  * @export
  * @template T
  * @param {Constructor<T>} target
  */
 export function Bootstrap<T>(target: Constructor<T>) {
   Reflect.defineMetadata(MAIN, undefined, target)
+}
+/**
+ * ## Singleton
+ * `tag`:`Singleton`
+ *
+ * `provide`:`instance`
+ *
+ * @export
+ * @param {*} target
+ */
+export function Singleton(target: any) {
+  Reflect.defineMetadata(CLASSTYPE.SINGLETON, undefined, target)
+}
+/**
+ * ## SingletonLazy
+ * `tag`:`SingletonLazy`
+ *
+ * `provide`:`getInstance()`
+ *
+ * @export
+ * @param {*} target
+ */
+export function SingletonLazy(target: any) {
+  Reflect.defineMetadata(CLASSTYPE.SINGLETON_LAZY, undefined, target)
+}
+/**
+ * # Class
+ */
+namespace Class {
+  export interface Singleton {
+    instance
+  }
+  export interface SingletonLazy {
+    getInstance()
+  }
+  export const isSingleton = (target: any): target is Singleton =>
+    Reflect.hasMetadata(CLASSTYPE.SINGLETON, target)
+  export const isSingletonLazy = (target: any): target is SingletonLazy =>
+    Reflect.hasMetadata(CLASSTYPE.SINGLETON_LAZY, target)
 }
 /**
  * # SaFactory
@@ -85,6 +133,19 @@ export namespace SaFactory {
    * @returns {T}
    */
   function create<T>(constructor: Constructor<T>): T {
+    if (Class.isSingleton(constructor)) {
+      if (constructor.instance) {
+        return constructor.instance
+      } else {
+        throw new Error('constructor should provide `instance`.')
+      }
+    } else if (Class.isSingletonLazy(constructor)) {
+      if (constructor.getInstance) {
+        return constructor.getInstance()
+      } else {
+        throw new Error('constructor should provide `getInstance`.')
+      }
+    }
     const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
       key => key.indexOf(META) !== -1
     )
@@ -129,7 +190,7 @@ export namespace SaFactory {
      * @param {...Constructor[]} Constructors
      * @memberof Container
      */
-    constructor(...Constructors: Constructor[]) {
+    constructor(...Constructors: any[]) {
       this.main =
         Constructors.find(constructor =>
           Reflect.hasMetadata(MAIN, constructor)
