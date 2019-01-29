@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '../../core/saber-ioc'
-import { IB, IA } from './type'
+import { IB, IA, ISA } from './type'
 
 @Injectable()
 export class B implements IB {
-  constructor(@Inject('A') public A: IA) {}
+  constructor(@Inject('A') public A: ISA) {}
   getName() {
-    this.A.setName('test')
-    return this.A.getName() + 'B'
+    this.A.getInstance().setName('test')
+    return this.A.getInstance().getName() + 'B'
   }
 }

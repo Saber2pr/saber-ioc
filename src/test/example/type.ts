@@ -2,6 +2,9 @@ export interface IA {
   getName(): string
   setName(v: string)
 }
+export interface ISA {
+  getInstance(): IA
+}
 
 export interface IB {
   getName(): string
@@ -12,5 +15,9 @@ export interface IC {
 }
 
 export interface ID {
+  getName(): string
+}
+
+export interface IE {
   getName(): string
 }

@@ -3,7 +3,8 @@ import { C } from './example/C'
 import { A } from './example/A'
 import { D } from './example/D'
 import { B } from './example/B'
-let container = new SaFactory.Container(C, D, A, B)
+import { E } from './example/E'
+let container = new SaFactory.Container(C, D, A, B, E)
 container.run()
 
 // let main = container.pull<D>()

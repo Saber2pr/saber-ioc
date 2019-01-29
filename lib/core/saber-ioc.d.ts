@@ -38,22 +38,18 @@ export declare function Bootstrap<T>(target: Constructor<T>): void;
  * ## Singleton
  * `tag`:`Singleton`
  *
- * `provide`:`instance`
- *
  * @export
  * @param {*} target
  */
 export declare function Singleton(target: any): void;
 /**
- * ## SingletonLazy
- * `tag`:`SingletonLazy`
- *
- * `provide`:`getInstance()`
+ * ## Static
+ * `tag`:`Static`
  *
  * @export
  * @param {*} target
  */
-export declare function SingletonLazy(target: any): void;
+export declare function Static(target: any): void;
 /**
  * # SaFactory
  * ## A simple ioc container for classes

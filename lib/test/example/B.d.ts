@@ -1,6 +1,6 @@
-import { IB, IA } from './type';
+import { IB, ISA } from './type';
 export declare class B implements IB {
-    A: IA;
-    constructor(A: IA);
+    A: ISA;
+    constructor(A: ISA);
     getName(): string;
 }
