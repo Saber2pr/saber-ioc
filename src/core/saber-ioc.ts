@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-01-29 18:44:39
+ * @Last Modified time: 2019-01-29 18:51:41
  */
 import 'reflect-metadata'
 /**
@@ -105,7 +105,7 @@ export function Static(target: any) {
  * # Class
  */
 namespace Class {
-  export const isSingleton = (target: any) =>
+  export const isStatic = (target: any) =>
     Reflect.hasMetadata(CLASSTYPE.STATIC, target)
 }
 /**
@@ -124,7 +124,7 @@ export namespace SaFactory {
    * @returns {T}
    */
   function create<T>(constructor: Constructor<T>): T {
-    if (Class.isSingleton(constructor)) {
+    if (Class.isStatic(constructor)) {
       return <any>constructor
     }
     const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
