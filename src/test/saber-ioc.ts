@@ -20,5 +20,33 @@ container.run()
 //     console.log('sa')
 //   }
 // }
+// // import 'reflect-metadata'
+// class Test0 {
+//   get() {
+//     return '000'
+//   }
+// }
+
+// @Boot
+// class Test {
+//   constructor(private test: string) {}
+// }
+
+// function Boot(target) {
+//   console.log(create(target).test)
+// }
+
+// function create(constructor) {
+//   const dependenciesParam: Function[] =
+//     Reflect.getMetadata('design:paramtypes', constructor) || []
+
+//   const depInstances = dependenciesParam.map(dependence =>
+//     create(<any>dependence)
+//   )
+
+//   return new constructor(...depInstances.reverse())
+// }
+
+// console.log([1, 2].concat([2, 3]))
 
 export function test_saber_ioc() {}

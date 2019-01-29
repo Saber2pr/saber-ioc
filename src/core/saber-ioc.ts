@@ -2,7 +2,7 @@
  * @Author: AK-12
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-01-29 18:51:41
+ * @Last Modified time: 2019-01-29 21:08:45
  */
 import 'reflect-metadata'
 /**
@@ -127,10 +127,10 @@ export namespace SaFactory {
     if (Class.isStatic(constructor)) {
       return <any>constructor
     }
-    const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
-      key => key.indexOf(META) !== -1
-    )
-    const dependencies = depKeys.map(key => {
+    const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
+      .filter(key => key.indexOf(META) !== -1)
+      .reverse()
+    const dependenciesMeta = depKeys.map(key => {
       if (Reflect.hasMetadata(key, MetaStore)) {
         return Reflect.getMetadata(key, MetaStore)
       } else {
@@ -139,8 +139,16 @@ export namespace SaFactory {
         )
       }
     })
-    const depInstances = dependencies.map(dependence => create(<any>dependence))
-    return new constructor(...depInstances.reverse())
+    const paramTypes: [] = Reflect.getMetadata('design:paramtypes', constructor)
+    paramTypes.forEach((value, index) => {
+      if (Reflect.get(value, 'name') !== 'Object') {
+        dependenciesMeta.splice(index, 0, value)
+      }
+    })
+    const depInstances = dependenciesMeta.map(dependence =>
+      create(<any>dependence)
+    )
+    return new constructor(...depInstances)
   }
   /**
    * # BootStrap

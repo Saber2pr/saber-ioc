@@ -15,27 +15,38 @@ git clone https://github.com/Saber2pr/saber-ioc.git
 ## examples
 
 ```ts
-import { Injectable } from '../../core/saber-ioc'
+import { Injectable, Singleton } from '../../core/saber-ioc'
 import { IA } from './type'
 
+@Singleton
 @Injectable()
 export class A implements IA {
-  constructor() {}
+  private constructor() {}
+  static instance: A
+  static getInstance() {
+    this.instance = this.instance || new A()
+    return this.instance
+  }
+  private name = 'A'
   getName() {
-    return 'A'
+    return this.name
+  }
+  setName(v: string) {
+    this.name = v
   }
 }
 ```
 
 ```ts
 import { Inject, Injectable } from '../../core/saber-ioc'
-import { IB, IA } from './type'
+import { IB, IA, ISA } from './type'
 
 @Injectable()
 export class B implements IB {
-  constructor(@Inject('A') public A: IA) {}
+  constructor(@Inject('A') public A: ISA) {}
   getName() {
-    return this.A.getName() + 'B'
+    this.A.getInstance().setName('test')
+    return this.A.getInstance().getName() + 'B'
   }
 }
 ```
@@ -48,27 +59,43 @@ import { Injectable, Inject } from '../../core/saber-ioc'
 export class C implements IC {
   constructor(@Inject('B') public B: IB) {}
   getName() {
+    console.log(this.B.getName())
     return this.B.getName() + 'C'
   }
 }
 ```
 
 ```ts
-import { Bootstrap, Inject, Injectable } from '../../core/saber-ioc'
-import { IA, IB, IC } from './type'
+import { Inject, Injectable, Bootstrap } from '../../core/saber-ioc'
+import { IB, ISA, IE } from './type'
+import { C } from './C'
 
 @Bootstrap
 @Injectable()
 export class D {
   constructor(
-    @Inject('A') public A: IA,
+    @Inject('A') public A: ISA,
+    public C: C,
     @Inject('B') public B: IB,
-    @Inject('C') public C: IC
+    @Inject('E') public E: IE
   ) {}
   test() {
-    console.log(this.A.getName())
     console.log(this.B.getName())
+    console.log(this.A.getInstance().getName())
     console.log(this.C.getName())
+    console.log(this.E.getName())
+  }
+}
+```
+
+```ts
+import { Injectable, Static } from '../../core/saber-ioc'
+
+@Static
+@Injectable()
+export class E {
+  static getName() {
+    return 'E'
   }
 }
 ```
@@ -126,3 +153,7 @@ npm run test
 > you should make test in /src/test
 
 ---
+
+# License
+
+MIT
