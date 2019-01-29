@@ -11,20 +11,23 @@ import 'reflect-metadata'
  */
 const MetaStore = {}
 /**
- * # META
- * `meta token`
+ * # DESIGN
  */
-const META = 'saber_meta'
+enum DESIGN {
+  PARAMTYPES = 'design:paramtypes'
+}
 /**
- * # MAIN
- * `main class tag`
+ * # CUSTOM
  */
-const MAIN = 'saber_main'
+enum CUSTOM {
+  META = 'saber_meta',
+  MAIN = 'saber_main'
+}
 /**
  * # CLASSTYPE
  */
-const CLASSTYPE = {
-  STATIC: 'saber_singleton'
+enum CLASSTYPE {
+  STATIC = 'saber_singleton'
 }
 /**
  * ## Constructor
@@ -37,7 +40,7 @@ export type Constructor<T = any> = { new (...args: Array<any>): T }
  * return a META key.
  * @param id
  */
-const MetaKey = (id: string) => `${META}:${id}`
+const MetaKey = (id: string) => `${CUSTOM.META}:${id}`
 /**
  * # Injectable
  * register the target to metaStore by id.
@@ -79,7 +82,7 @@ export function Inject(id: string): ParameterDecorator {
  * @param {Constructor<T>} target
  */
 export function Bootstrap<T>(target: Constructor<T>) {
-  Reflect.defineMetadata(MAIN, undefined, target)
+  Reflect.defineMetadata(CUSTOM.MAIN, undefined, target)
 }
 /**
  * ## Singleton
@@ -128,24 +131,28 @@ export namespace SaFactory {
       return <any>constructor
     }
     const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
-      .filter(key => key.indexOf(META) !== -1)
+      .filter(key => key.indexOf(CUSTOM.META) !== -1)
       .reverse()
     const dependenciesMeta = depKeys.map(key => {
       if (Reflect.hasMetadata(key, MetaStore)) {
         return Reflect.getMetadata(key, MetaStore)
       } else {
         throw new Error(
-          `cannot found ${key.replace(META, 'dependence')} in container.`
+          `cannot found ${key.replace(CUSTOM.META, 'dependence')} in container.`
         )
       }
     })
-    const paramTypes: [] =
-      Reflect.getMetadata('design:paramtypes', constructor) || []
-    paramTypes.forEach((value, index) => {
-      if (Reflect.get(value, 'name') !== 'Object') {
-        dependenciesMeta.splice(index, 0, value)
-      }
-    })
+    if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
+      ;(<any[]>Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)).forEach(
+        (value, index) => {
+          if (Reflect.get(value, 'name') !== 'Object') {
+            dependenciesMeta.splice(index, 0, value)
+          }
+        }
+      )
+    } else {
+      throw new Error(`cannot resolve paramtype:${constructor.name}.`)
+    }
     const depInstances = dependenciesMeta.map(dependence =>
       create(<any>dependence)
     )
@@ -191,7 +198,7 @@ export namespace SaFactory {
     constructor(...Constructors: any[]) {
       this.main =
         Constructors.find(constructor =>
-          Reflect.hasMetadata(MAIN, constructor)
+          Reflect.hasMetadata(CUSTOM.MAIN, constructor)
         ) || Constructors[0]
     }
     /**
