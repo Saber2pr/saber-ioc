@@ -1,9 +1,11 @@
 import { Injectable, Static } from '../../core/saber-ioc'
 
-@Static
 @Injectable()
 export class E {
-  static getName() {
-    return 'E'
+  constructor(private name: string = 'E') {
+    this.name = 'E'
+  }
+  getName() {
+    return this.name
   }
 }

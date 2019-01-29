@@ -1,3 +1,5 @@
 export declare class E {
-    static getName(): string;
+    private name;
+    constructor(name?: string);
+    getName(): string;
 }

@@ -139,7 +139,8 @@ export namespace SaFactory {
         )
       }
     })
-    const paramTypes: [] = Reflect.getMetadata('design:paramtypes', constructor)
+    const paramTypes: [] =
+      Reflect.getMetadata('design:paramtypes', constructor) || []
     paramTypes.forEach((value, index) => {
       if (Reflect.get(value, 'name') !== 'Object') {
         dependenciesMeta.splice(index, 0, value)
