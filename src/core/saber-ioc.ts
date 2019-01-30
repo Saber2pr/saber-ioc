@@ -1,5 +1,5 @@
 /*
- * @Author: AK-12
+ * @Author: saber2pr
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
  * @Last Modified time: 2019-01-29 21:08:45
@@ -13,21 +13,37 @@ const MetaStore = {}
 /**
  * # DESIGN
  */
-enum DESIGN {
+const enum DESIGN {
   PARAMTYPES = 'design:paramtypes'
 }
 /**
  * # CUSTOM
  */
-enum CUSTOM {
+const enum CUSTOM {
   META = 'saber_meta',
-  MAIN = 'saber_main'
+  MAIN = 'saber_main',
+  VISITED = 'saber_visited'
 }
 /**
  * # CLASSTYPE
  */
-enum CLASSTYPE {
-  STATIC = 'saber_singleton'
+const enum TYPE {
+  STATIC = 'saber_singleton',
+  NUMBER = 'Number',
+  SRTING = 'String',
+  BOOLEAN = 'Boolean',
+  VOID = 'undefined',
+  ARRAY = 'Array'
+}
+/**
+ * # BASETYPE
+ */
+const BASETYPE = [TYPE.NUMBER, TYPE.SRTING, TYPE.BOOLEAN, TYPE.VOID, TYPE.ARRAY]
+/**
+ * # METHODTYPE
+ */
+const enum METHODTYPE {
+  BOOT = 'main'
 }
 /**
  * ## Constructor
@@ -92,7 +108,7 @@ export function Bootstrap<T>(target: Constructor<T>) {
  * @param {*} target
  */
 export function Singleton(target: any) {
-  Reflect.defineMetadata(CLASSTYPE.STATIC, undefined, target)
+  Reflect.defineMetadata(TYPE.STATIC, undefined, target)
 }
 /**
  * ## Static
@@ -102,61 +118,93 @@ export function Singleton(target: any) {
  * @param {*} target
  */
 export function Static(target: any) {
-  Reflect.defineMetadata(CLASSTYPE.STATIC, undefined, target)
+  Reflect.defineMetadata(TYPE.STATIC, undefined, target)
 }
 /**
  * # Class
  */
 namespace Class {
   export const isStatic = (target: any) =>
-    Reflect.hasMetadata(CLASSTYPE.STATIC, target)
+    Reflect.hasMetadata(TYPE.STATIC, target)
 }
 /**
- * # SaFactory
+ * ParamCheck
+ *
+ * @param {Constructor} constructor
+ * @param {string} methodName
+ * @returns
+ */
+function ParamCheck(constructor: Constructor, methodName: string) {
+  const origin = Reflect.get(constructor, methodName)
+  Reflect.set(constructor, methodName, (...params: Constructor[]) => {
+    const constructor$ = params[0]
+    if (BASETYPE.some(TYPE => TYPE === Reflect.get(constructor$, 'name'))) {
+      throw new Error(
+        `the param of class[${Reflect.getMetadata(
+          CUSTOM.VISITED,
+          MetaStore
+        )}]'s constructor has invalid type: ${constructor$.name}`
+      )
+    } else {
+      Reflect.defineMetadata(CUSTOM.VISITED, constructor$.name, MetaStore)
+    }
+    return (<Function>origin).apply(constructor, params)
+  })
+  return origin
+}
+/**
+ * # SaIOC
  * ## A simple ioc container for classes
  * 1. ensure `tsconfig.json` : `"emitDecoratorMetadata": true`.
  * 2. ensure `tsconfig.json` : `"experimentalDecorators": true`.
  * @exports
  */
-export namespace SaFactory {
+export namespace SaIOC {
   /**
-   * create
-   *
-   * @template T
-   * @param {Constructor<T>} constructor
-   * @returns {T}
+   * # Factory
    */
-  function create<T>(constructor: Constructor<T>): T {
-    if (Class.isStatic(constructor)) {
-      return <any>constructor
-    }
-    const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
-      .filter(key => key.indexOf(CUSTOM.META) !== -1)
-      .reverse()
-    const dependenciesMeta = depKeys.map(key => {
-      if (Reflect.hasMetadata(key, MetaStore)) {
-        return Reflect.getMetadata(key, MetaStore)
-      } else {
-        throw new Error(
-          `cannot found ${key.replace(CUSTOM.META, 'dependence')} in container.`
-        )
+  export class Factory {
+    /**
+     * create
+     *
+     * @template T
+     * @param {Constructor<T>} constructor
+     * @returns {T}
+     */
+    @ParamCheck
+    static create<T>(constructor: Constructor<T>): T {
+      if (Class.isStatic(constructor)) {
+        return <any>constructor
       }
-    })
-    if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
-      ;(<any[]>Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)).forEach(
-        (value, index) => {
+      const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
+        .filter(key => key.indexOf(CUSTOM.META) !== -1)
+        .reverse()
+      const dependenciesMeta = depKeys.map(key => {
+        if (Reflect.hasMetadata(key, MetaStore)) {
+          return <Constructor>Reflect.getMetadata(key, MetaStore)
+        } else {
+          throw new Error(
+            `cannot found ${key.replace(
+              CUSTOM.META,
+              'dependence'
+            )} in container.`
+          )
+        }
+      })
+      if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
+        ;(<Constructor[]>(
+          Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)
+        )).forEach((value, index) => {
           if (Reflect.get(value, 'name') !== 'Object') {
             dependenciesMeta.splice(index, 0, value)
           }
-        }
+        })
+      }
+      const depInstances = dependenciesMeta.map(dependence =>
+        this.create(<any>dependence)
       )
-    } else {
-      throw new Error(`cannot resolve paramtype:${constructor.name}.`)
+      return new constructor(...depInstances)
     }
-    const depInstances = dependenciesMeta.map(dependence =>
-      create(<any>dependence)
-    )
-    return new constructor(...depInstances)
   }
   /**
    * # BootStrap
@@ -175,12 +223,18 @@ export namespace SaFactory {
     constructor: Constructor<T>,
     mainMethod?: string
   ): void {
-    const props = Object.keys(constructor.prototype)
-    const main = create(constructor)
-    if (props.some(value => value === 'main')) {
-      main['main']()
+    const main = Factory.create(constructor)
+    if (Reflect.has(constructor.prototype, METHODTYPE.BOOT)) {
+      ;(<Function>Reflect.get(constructor.prototype, METHODTYPE.BOOT)).apply(
+        main
+      )
     } else {
-      main[mainMethod || props[0]]()
+      ;(<Function>(
+        Reflect.get(
+          constructor.prototype,
+          mainMethod || Reflect.ownKeys(constructor.prototype)[1]
+        )
+      )).apply(main)
     }
   }
   /**
@@ -210,7 +264,7 @@ export namespace SaFactory {
      * @memberof Container
      */
     pull<T = any>(): T {
-      return create(this.main)
+      return Factory.create(this.main)
     }
     /**
      * run
@@ -227,7 +281,7 @@ export namespace SaFactory {
      */
     run(Constructor: Constructor): void
     run(Constructor?: Constructor): void {
-      SaFactory.BootStrap(Constructor || this.main)
+      BootStrap(Constructor || this.main)
     }
   }
 }

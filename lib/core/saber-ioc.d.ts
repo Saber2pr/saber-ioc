@@ -51,13 +51,26 @@ export declare function Singleton(target: any): void;
  */
 export declare function Static(target: any): void;
 /**
- * # SaFactory
+ * # SaIOC
  * ## A simple ioc container for classes
  * 1. ensure `tsconfig.json` : `"emitDecoratorMetadata": true`.
  * 2. ensure `tsconfig.json` : `"experimentalDecorators": true`.
  * @exports
  */
-export declare namespace SaFactory {
+export declare namespace SaIOC {
+    /**
+     * # Factory
+     */
+    class Factory {
+        /**
+         * create
+         *
+         * @template T
+         * @param {Constructor<T>} constructor
+         * @returns {T}
+         */
+        static create<T>(constructor: Constructor<T>): T;
+    }
     /**
      * # BootStrap
      * ### class should provide method - `main`

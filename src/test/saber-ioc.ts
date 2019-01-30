@@ -1,23 +1,24 @@
-import { SaFactory } from '../core/saber-ioc'
+import { Inject, Bootstrap, Injectable, SaIOC } from '../core/saber-ioc'
 import { C } from './example/C'
 import { A } from './example/A'
 import { D } from './example/D'
 import { B } from './example/B'
 import { E } from './example/E'
-let container = new SaFactory.Container(C, D, A, B, E)
+let container = new SaIOC.Container(C, D, A, B, E)
 container.run()
 
-// let main = container.pull<D>()
+let main = container.pull<D>()
 
-// main.test()
+main.test()
 
-// @SaFactory.BootStrap
+// @SaIOC.BootStrap
 // class Test {
+//   constructor(private name = 'test') {}
 //   boot() {
 //     console.log('test')
 //   }
 //   main() {
-//     console.log('sa')
+//     console.log('main:', this.name)
 //   }
 // }
 // // import 'reflect-metadata'

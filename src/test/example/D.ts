@@ -1,5 +1,5 @@
 import { Inject, Injectable, Bootstrap } from '../../core/saber-ioc'
-import { IB,  ISA, IE } from './type'
+import { IB, ISA, IE } from './type'
 import { C } from './C'
 
 @Bootstrap
@@ -11,7 +11,11 @@ export class D {
     @Inject('B') public B: IB,
     @Inject('E') public E: IE
   ) {}
+  private value = 'test'
   test() {
+    console.log(this.value)
+  }
+  main() {
     console.log(this.B.getName())
     console.log(this.A.getInstance().getName())
     console.log(this.C.getName())

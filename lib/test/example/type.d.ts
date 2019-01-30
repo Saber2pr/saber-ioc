@@ -1,6 +1,6 @@
 export interface IA {
     getName(): string;
-    setName(v: string): any;
+    setName(v: string): void;
 }
 export interface ISA {
     getInstance(): IA;

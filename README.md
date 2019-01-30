@@ -1,8 +1,10 @@
-# saber-ioc
-
-[![npm](https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue)](https://www.npmjs.com/package/saber-ioc)
-
-> a simple ioc container for classes
+<div style="text-align: center;">
+  <h1 style="color:lightblue">saber-ioc</h1>
+  <a href="https://www.npmjs.com/package/saber-ioc">
+    <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue"/>
+  </a>
+  <h3 style="color:grey">a simple ioc container for classes</h3>
+</div>
 
 ```bash
 # from npm
@@ -43,10 +45,10 @@ import { IB, IA, ISA } from './type'
 
 @Injectable()
 export class B implements IB {
-  constructor(@Inject('A') public A: ISA) {}
+  constructor(@Inject('A') public A: ISA, private name = 233) {}
   getName() {
     this.A.getInstance().setName('test')
-    return this.A.getInstance().getName() + 'B'
+    return this.A.getInstance().getName() + this.name
   }
 }
 ```
@@ -79,7 +81,11 @@ export class D {
     @Inject('B') public B: IB,
     @Inject('E') public E: IE
   ) {}
+  private value = 'test'
   test() {
+    console.log(this.value)
+  }
+  main() {
     console.log(this.B.getName())
     console.log(this.A.getInstance().getName())
     console.log(this.C.getName())
@@ -91,38 +97,37 @@ export class D {
 ```ts
 import { Injectable, Static } from '../../core/saber-ioc'
 
-@Static
 @Injectable()
 export class E {
-  static getName() {
-    return 'E'
+  constructor(private name = 'E') {}
+  getName() {
+    return this.name
   }
 }
 ```
 
 ```ts
-import { SaFactory } from '../core/saber-ioc'
+import { Inject, Bootstrap, Injectable, SaIOC } from '../core/saber-ioc'
 import { C } from './example/C'
 import { A } from './example/A'
 import { D } from './example/D'
 import { B } from './example/B'
-
-let container = new SaFactory.Container(C, A, D, B)
+import { E } from './example/E'
+let container = new SaIOC.Container(C, D, A, B, E)
 container.run()
-// console
-/**
- * A
- * AB
- * ABC
- */
-let main: D = container.pull()
+
+let main = container.pull<D>()
 
 main.test()
-// console
 /**
- * A
- * AB
- * ABC
+ * console:
+ *
+ * test233
+ * test
+ * test233
+ * test233C
+ * E
+ * test
  */
 ```
 
@@ -131,7 +136,7 @@ main.test()
 ## start
 
 ```bash
-# install the typescript and webpack
+# install the dependencies
 npm install
 ```
 
@@ -142,8 +147,6 @@ npm run test
 
 ```
 
-> Author: saber2pr
-
 ---
 
 ## develope and test
@@ -151,6 +154,12 @@ npm run test
 > you should write ts in /src
 
 > you should make test in /src/test
+
+---
+
+# Author
+
+saber2pr
 
 ---
 

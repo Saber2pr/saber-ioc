@@ -6,5 +6,7 @@ export declare class D {
     B: IB;
     E: IE;
     constructor(A: ISA, C: C, B: IB, E: IE);
+    private value;
     test(): void;
+    main(): void;
 }
