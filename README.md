@@ -1,10 +1,10 @@
-<div style="text-align: center;">
-  <h1 style="color:lightblue">saber-ioc</h1>
+<h1 align="center">saber-ioc</h1>
+<p align="center">
   <a href="https://www.npmjs.com/package/saber-ioc">
-    <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue"/>
+    <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue" />
   </a>
-  <h3 style="color:grey">a simple ioc container for classes</h3>
-</div>
+</p>
+<h3 align="center">a simple ioc container for classes</h3>
 
 ```bash
 # from npm
