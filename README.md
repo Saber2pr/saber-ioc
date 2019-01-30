@@ -1,9 +1,9 @@
 <h1 align="center">saber-ioc</h1>
-<p align="center">
-  <a href="https://www.npmjs.com/package/saber-ioc">
-    <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue" />
-  </a>
-</p>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/saber-ioc">
+      <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue" />
+    </a>
+  </p>
 <h3 align="center">a simple ioc container for classes</h3>
 
 ```bash

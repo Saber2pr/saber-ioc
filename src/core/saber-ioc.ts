@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-01-29 21:08:45
+ * @Last Modified time: 2019-01-30 20:45:30
  */
 import 'reflect-metadata'
 /**
@@ -14,7 +14,9 @@ const MetaStore = {}
  * # DESIGN
  */
 const enum DESIGN {
-  PARAMTYPES = 'design:paramtypes'
+  TYPE = 'design:type',
+  PARAMTYPES = 'design:paramtypes',
+  RETURNTYPE = 'design:returntype'
 }
 /**
  * # CUSTOM
@@ -22,13 +24,13 @@ const enum DESIGN {
 const enum CUSTOM {
   META = 'saber_meta',
   MAIN = 'saber_main',
+  STATIC = 'saber_static',
   VISITED = 'saber_visited'
 }
 /**
- * # CLASSTYPE
+ * # BASETYPE
  */
-const enum TYPE {
-  STATIC = 'saber_singleton',
+const enum BASETYPE {
   NUMBER = 'Number',
   SRTING = 'String',
   BOOLEAN = 'Boolean',
@@ -38,7 +40,13 @@ const enum TYPE {
 /**
  * # BASETYPE
  */
-const BASETYPE = [TYPE.NUMBER, TYPE.SRTING, TYPE.BOOLEAN, TYPE.VOID, TYPE.ARRAY]
+const BASETYPES = [
+  BASETYPE.NUMBER,
+  BASETYPE.SRTING,
+  BASETYPE.BOOLEAN,
+  BASETYPE.VOID,
+  BASETYPE.ARRAY
+]
 /**
  * # METHODTYPE
  */
@@ -59,6 +67,9 @@ export type Constructor<T = any> = { new (...args: Array<any>): T }
 const MetaKey = (id: string) => `${CUSTOM.META}:${id}`
 /**
  * # Injectable
+ *
+ * `Decorator`
+ *
  * register the target to metaStore by id.
  * @export
  * @param {string} [id]
@@ -79,6 +90,9 @@ export function Injectable(id?: string): ClassDecorator {
 }
 /**
  * # Inject
+ *
+ * `Decorator`
+ *
  * set a metadata tag needed to target.
  * @export
  * @param {string} id
@@ -89,6 +103,9 @@ export function Inject(id: string): ParameterDecorator {
 }
 /**
  * ## Bootstrap
+ *
+ * `Decorator`
+ *
  * `tag`:`main class`
  *
  * `provide`:`main()`
@@ -102,33 +119,58 @@ export function Bootstrap<T>(target: Constructor<T>) {
 }
 /**
  * ## Singleton
+ *
+ * `Decorator`
+ *
  * `tag`:`Singleton`
  *
  * @export
  * @param {*} target
  */
 export function Singleton(target: any) {
-  Reflect.defineMetadata(TYPE.STATIC, undefined, target)
+  Reflect.defineMetadata(CUSTOM.STATIC, undefined, target)
 }
 /**
  * ## Static
+ *
+ * `Decorator`
+ *
  * `tag`:`Static`
  *
  * @export
  * @param {*} target
  */
 export function Static(target: any) {
-  Reflect.defineMetadata(TYPE.STATIC, undefined, target)
+  Reflect.defineMetadata(CUSTOM.STATIC, undefined, target)
 }
 /**
  * # Class
  */
 namespace Class {
   export const isStatic = (target: any) =>
-    Reflect.hasMetadata(TYPE.STATIC, target)
+    Reflect.hasMetadata(CUSTOM.STATIC, target)
+}
+/**
+ * TypeCheck
+ *
+ * @param {Constructor} constructor$
+ */
+function TypeCheck(constructor$: Constructor) {
+  if (BASETYPES.some(TYPE => TYPE === Reflect.get(constructor$, 'name'))) {
+    throw new Error(
+      `the param of class[${Reflect.getMetadata(
+        CUSTOM.VISITED,
+        MetaStore
+      )}]'s constructor has invalid type: ${constructor$.name}`
+    )
+  } else {
+    Reflect.defineMetadata(CUSTOM.VISITED, constructor$.name, MetaStore)
+  }
 }
 /**
  * ParamCheck
+ *
+ * `Decorator`
  *
  * @param {Constructor} constructor
  * @param {string} methodName
@@ -138,16 +180,10 @@ function ParamCheck(constructor: Constructor, methodName: string) {
   const origin = Reflect.get(constructor, methodName)
   Reflect.set(constructor, methodName, (...params: Constructor[]) => {
     const constructor$ = params[0]
-    if (BASETYPE.some(TYPE => TYPE === Reflect.get(constructor$, 'name'))) {
-      throw new Error(
-        `the param of class[${Reflect.getMetadata(
-          CUSTOM.VISITED,
-          MetaStore
-        )}]'s constructor has invalid type: ${constructor$.name}`
-      )
-    } else {
-      Reflect.defineMetadata(CUSTOM.VISITED, constructor$.name, MetaStore)
+    if (Class.isStatic(constructor$)) {
+      return <any>constructor$
     }
+    TypeCheck(constructor$)
     return (<Function>origin).apply(constructor, params)
   })
   return origin
@@ -173,9 +209,6 @@ export namespace SaIOC {
      */
     @ParamCheck
     static create<T>(constructor: Constructor<T>): T {
-      if (Class.isStatic(constructor)) {
-        return <any>constructor
-      }
       const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
         .filter(key => key.indexOf(CUSTOM.META) !== -1)
         .reverse()

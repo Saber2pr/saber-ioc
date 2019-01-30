@@ -9,6 +9,9 @@ export declare type Constructor<T = any> = {
 };
 /**
  * # Injectable
+ *
+ * `Decorator`
+ *
  * register the target to metaStore by id.
  * @export
  * @param {string} [id]
@@ -17,6 +20,9 @@ export declare type Constructor<T = any> = {
 export declare function Injectable(id?: string): ClassDecorator;
 /**
  * # Inject
+ *
+ * `Decorator`
+ *
  * set a metadata tag needed to target.
  * @export
  * @param {string} id
@@ -25,6 +31,9 @@ export declare function Injectable(id?: string): ClassDecorator;
 export declare function Inject(id: string): ParameterDecorator;
 /**
  * ## Bootstrap
+ *
+ * `Decorator`
+ *
  * `tag`:`main class`
  *
  * `provide`:`main()`
@@ -36,6 +45,9 @@ export declare function Inject(id: string): ParameterDecorator;
 export declare function Bootstrap<T>(target: Constructor<T>): void;
 /**
  * ## Singleton
+ *
+ * `Decorator`
+ *
  * `tag`:`Singleton`
  *
  * @export
@@ -44,6 +56,9 @@ export declare function Bootstrap<T>(target: Constructor<T>): void;
 export declare function Singleton(target: any): void;
 /**
  * ## Static
+ *
+ * `Decorator`
+ *
  * `tag`:`Static`
  *
  * @export
