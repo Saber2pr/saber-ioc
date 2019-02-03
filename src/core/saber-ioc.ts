@@ -99,7 +99,8 @@ export function Injectable(id?: string): ClassDecorator {
  * @returns {ParameterDecorator}
  */
 export function Inject(id: string): ParameterDecorator {
-  return target => Reflect.defineMetadata(MetaKey(id), undefined, target)
+  return (target, key, index) =>
+    Reflect.defineMetadata(MetaKey(id), index, target)
 }
 /**
  * ## Bootstrap
@@ -209,12 +210,24 @@ export namespace SaIOC {
      */
     @ParamCheck
     static create<T>(constructor: Constructor<T>): T {
-      const depKeys = (<string[]>Reflect.getMetadataKeys(constructor))
-        .filter(key => key.indexOf(CUSTOM.META) !== -1)
-        .reverse()
-      const dependenciesMeta = depKeys.map(key => {
+      const dependenciesMeta: Constructor<T>[] = []
+      if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
+        ;(<Constructor[]>(
+          Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)
+        )).forEach((value, index) => {
+          if (Reflect.get(value, 'name') !== 'Object') {
+            dependenciesMeta[index] = value
+          }
+        })
+      }
+      const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
+        key => key.indexOf(CUSTOM.META) !== -1
+      )
+      depKeys.forEach(key => {
         if (Reflect.hasMetadata(key, MetaStore)) {
-          return <Constructor>Reflect.getMetadata(key, MetaStore)
+          const index = Reflect.getMetadata(key, constructor)
+          const meta = <Constructor>Reflect.getMetadata(key, MetaStore)
+          dependenciesMeta[index] = meta
         } else {
           throw new Error(
             `cannot found ${key.replace(
@@ -224,17 +237,8 @@ export namespace SaIOC {
           )
         }
       })
-      if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
-        ;(<Constructor[]>(
-          Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)
-        )).forEach((value, index) => {
-          if (Reflect.get(value, 'name') !== 'Object') {
-            dependenciesMeta.splice(index, 0, value)
-          }
-        })
-      }
       const depInstances = dependenciesMeta.map(dependence =>
-        this.create(<any>dependence)
+        this.create(dependence)
       )
       return new constructor(...depInstances)
     }

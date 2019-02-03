@@ -1,7 +1,7 @@
 import { Inject, Bootstrap, Injectable, SaIOC } from '../core/saber-ioc'
 import { C } from './example/C'
-import { A } from './example/A'
 import { D } from './example/D'
+import { A } from './example/A'
 import { B } from './example/B'
 import { E } from './example/E'
 let container = new SaIOC.Container(C, D, A, B, E)
