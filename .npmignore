@@ -2,3 +2,4 @@ saber-ioc.min.js
 src/
 lib/test/
 build/
+tsconfig.json
