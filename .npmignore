@@ -1,2 +1,4 @@
-./saber-ioc.min.js
+saber-ioc.min.js
 src/
+lib/test/
+build/
