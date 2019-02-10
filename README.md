@@ -194,10 +194,10 @@ new sioc.SaIOC.Container(App, Service).run()
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>saber-ioc in browser</title>
     <script src="./saber-ioc.min.js"></script>
+    <script src="./src/injectable.js"></script>
   </head>
 
   <body></body>
-  <script src="./src/injectable.js"></script>
   <script src="./src/index.js"></script>
 </html>
 ```
