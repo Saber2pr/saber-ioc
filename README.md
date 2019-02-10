@@ -131,6 +131,77 @@ main.test()
  */
 ```
 
+## browser(es6)
+
+```js
+class Service {
+  constructor() {
+    this.value = 'hello'
+  }
+}
+// register to store by default id.
+sioc.Injectable()(Service)
+```
+
+```js
+class App {
+  constructor(Service) {
+    this.Service = Service
+  }
+  main() {
+    console.log(this.Service.value)
+  }
+}
+// set the main class
+sioc.Bootstrap(App)
+// inject the dependence
+// params[0] is target, params[2] is constructor-param-index.
+sioc.Inject('Service')(App, undefined, 0)
+
+new sioc.SaIOC.Container(App, Service).run()
+```
+
+## browser(es5)
+
+```js
+function Service() {
+  this.value = 'hello'
+}
+
+sioc.Injectable()(Service)
+```
+
+```js
+function App(Service) {
+  this.Service = Service
+}
+App.prototype.main = function() {
+  console.log(this.Service.value)
+}
+
+sioc.Bootstrap(App)
+sioc.Inject('Service')(App, undefined, 0)
+
+new sioc.SaIOC.Container(App, Service).run()
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>saber-ioc in browser</title>
+    <script src="./saber-ioc.min.js"></script>
+  </head>
+
+  <body></body>
+  <script src="./src/injectable.js"></script>
+  <script src="./src/index.js"></script>
+</html>
+```
+
 ---
 
 ## start
@@ -143,7 +214,7 @@ npm install
 ```bash
 npm start
 
-npm run test
+npm test
 
 ```
 
