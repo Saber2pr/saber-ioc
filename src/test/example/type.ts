@@ -1,23 +1,30 @@
-export interface IA {
-  getName(): string
-  setName(v: string): void
-}
-export interface ISA {
-  getInstance(): IA
+export interface Listener {
+  resolveMessage(message: string): void
 }
 
-export interface IB {
-  getName(): string
+export interface IDispatcher {
+  subscribe(id: string, listener: Listener): this
+  emit(from: string, to: string, message: string): this
 }
 
-export interface IC {
-  getName(): string
+export interface ISDispatcher {
+  getInstance(): IDispatcher
 }
 
-export interface ID {
-  getName(): string
+export interface IServiceA {
+  getInforA(): string
 }
 
-export interface IE {
-  getName(): string
+export interface IServiceB {
+  getInforB(): string
+}
+
+export interface IControllerA extends Listener {
+  register(): void
+  callControllerB(): void
+}
+
+export interface IControllerB extends Listener {
+  register(): void
+  callControllerA(): void
 }

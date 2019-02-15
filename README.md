@@ -17,117 +17,147 @@ git clone https://github.com/Saber2pr/saber-ioc.git
 ## examples
 
 ```ts
-import { Injectable, Singleton } from '../../core/saber-ioc'
-import { IA } from './type'
+import { Injectable } from '../../core/saber-ioc'
+import { IServiceA, IServiceB } from './type'
 
-@Singleton
 @Injectable()
-export class A implements IA {
-  private constructor() {}
-  static instance: A
-  static getInstance() {
-    this.instance = this.instance || new A()
-    return this.instance
+export class ServiceA implements IServiceA {
+  getInforA() {
+    return 'my name is A, age 222'
   }
-  private name = 'A'
-  getName() {
-    return this.name
-  }
-  setName(v: string) {
-    this.name = v
+}
+
+@Injectable()
+export class ServiceB implements IServiceB {
+  getInforB() {
+    return 'my name is B, age 333'
   }
 }
 ```
 
 ```ts
 import { Inject, Injectable } from '../../core/saber-ioc'
-import { IB, IA, ISA } from './type'
+import {
+  IServiceA,
+  IServiceB,
+  ISDispatcher,
+  IControllerA,
+  IControllerB
+} from './type'
 
 @Injectable()
-export class B implements IB {
-  constructor(@Inject('A') public A: ISA, private name = 233) {}
-  getName() {
-    this.A.getInstance().setName('test')
-    return this.A.getInstance().getName() + this.name
+export class ControllerA implements IControllerA {
+  constructor(
+    @Inject('ServiceA') private ServiceA: IServiceA,
+    @Inject('Dispatcher') private Dispatcher: ISDispatcher
+  ) {}
+  register() {
+    this.Dispatcher.getInstance().subscribe('A', this)
+  }
+  callControllerB() {
+    this.Dispatcher.getInstance().emit(
+      'A',
+      'B',
+      `Hello B! I am A. Infor: ${this.ServiceA.getInforA()}`
+    )
+  }
+  resolveMessage(message: string) {
+    console.log(message)
+  }
+}
+
+@Injectable()
+export class ControllerB implements IControllerB {
+  constructor(
+    @Inject('ServiceB') private ServiceB: IServiceB,
+    @Inject('Dispatcher') private Dispatcher: ISDispatcher
+  ) {}
+  register() {
+    this.Dispatcher.getInstance().subscribe('B', this)
+  }
+  callControllerA() {
+    this.Dispatcher.getInstance().emit(
+      'B',
+      'A',
+      `Hello A! I am B. Infor: ${this.ServiceB.getInforB()}`
+    )
+  }
+  resolveMessage(message: string) {
+    console.log(message)
   }
 }
 ```
 
 ```ts
-import { IB, IC } from './type'
-import { Injectable, Inject } from '../../core/saber-ioc'
+import { Injectable, Singleton } from '../../core/saber-ioc'
+import { IDispatcher, Listener } from './type'
 
+@Singleton
 @Injectable()
-export class C implements IC {
-  constructor(@Inject('B') public B: IB) {}
-  getName() {
-    console.log(this.B.getName())
-    return this.B.getName() + 'C'
+export default class Dispatcher implements IDispatcher {
+  private constructor() {
+    this.listeners = new Map()
+  }
+  private static instance: Dispatcher = null
+  public static getInstance(): Dispatcher {
+    this.instance = this.instance || new Dispatcher()
+    return this.instance
+  }
+  private listeners: Map<string, Listener>
+  subscribe(id: string, listener: Listener) {
+    this.listeners.set(id, listener)
+    return this
+  }
+  unsubscribe(id: string) {
+    this.listeners.delete(id)
+    return this
+  }
+  emit(from: string, to: string, message: string) {
+    if (this.listeners.has(from)) {
+      if (this.listeners.has(to)) {
+        this.listeners.get(to).resolveMessage(message)
+      } else {
+        console.log(`the id[${to}] called is not existed!`)
+      }
+    } else {
+      console.log(`please subscribe our first!`)
+    }
+    return this
   }
 }
 ```
 
 ```ts
-import { Inject, Injectable, Bootstrap } from '../../core/saber-ioc'
-import { IB, ISA, IE } from './type'
-import { C } from './C'
+import { SaIOC, Inject, Bootstrap } from '../core/saber-ioc'
+import { ControllerA, ControllerB } from './example/controller'
+import Dispatcher from './example/dispatcher'
+import { ServiceA, ServiceB } from './example/service'
 
 @Bootstrap
-@Injectable()
-export class D {
+class Application {
   constructor(
-    @Inject('A') public A: ISA,
-    public C: C,
-    @Inject('B') public B: IB,
-    @Inject('E') public E: IE
+    @Inject('ControllerA') private ControllerA: ControllerA,
+    @Inject('ControllerB') private ControllerB: ControllerB
   ) {}
-  private value = 'test'
-  test() {
-    console.log(this.value)
-  }
   main() {
-    console.log(this.B.getName())
-    console.log(this.A.getInstance().getName())
-    console.log(this.C.getName())
-    console.log(this.E.getName())
+    this.ControllerA.register()
+    this.ControllerB.register()
+    this.ControllerA.callControllerB()
+    this.ControllerB.callControllerA()
   }
 }
-```
 
-```ts
-import { Injectable, Static } from '../../core/saber-ioc'
-
-@Injectable()
-export class E {
-  constructor(private name = 'E') {}
-  getName() {
-    return this.name
-  }
-}
-```
-
-```ts
-import { Inject, Bootstrap, Injectable, SaIOC } from '../core/saber-ioc'
-import { C } from './example/C'
-import { A } from './example/A'
-import { D } from './example/D'
-import { B } from './example/B'
-import { E } from './example/E'
-let container = new SaIOC.Container(C, D, A, B, E)
-container.run()
-
-let main = container.pull<D>()
-
-main.test()
+new SaIOC.Container(
+  ControllerA,
+  ControllerB,
+  Dispatcher,
+  ServiceA,
+  ServiceB,
+  Application
+).run()
 /**
- * console:
- *
- * test233
- * test
- * test233
- * test233C
- * E
- * test
+ * Hello B! I am A. Infor: my name is A, age 222
+ * Hello A! I am B. Infor: my name is B, age 333
  */
 ```
 

@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-01-30 20:45:30
+ * @Last Modified time: 2019-02-15 12:20:28
  */
 import 'reflect-metadata'
 /**
@@ -157,7 +157,7 @@ namespace Class {
  * @param {Constructor} constructor$
  */
 function TypeCheck(constructor$: Constructor) {
-  if (BASETYPES.some(TYPE => TYPE === Reflect.get(constructor$, 'name'))) {
+  if (BASETYPES.includes(Reflect.get(constructor$, 'name'))) {
     throw new Error(
       `the param of class[${Reflect.getMetadata(
         CUSTOM.VISITED,

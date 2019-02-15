@@ -1,53 +1,29 @@
-import { Inject, Bootstrap, Injectable, SaIOC } from '../core/saber-ioc'
-import { C } from './example/C'
-import { D } from './example/D'
-import { A } from './example/A'
-import { B } from './example/B'
-import { E } from './example/E'
-let container = new SaIOC.Container(C, D, A, B, E)
-container.run()
+import { SaIOC, Inject, Bootstrap } from '../core/saber-ioc'
+import { ControllerA, ControllerB } from './example/controller'
+import Dispatcher from './example/dispatcher'
+import { ServiceA, ServiceB } from './example/service'
 
-let main = container.pull<D>()
+@Bootstrap
+class Application {
+  constructor(
+    @Inject('ControllerA') private ControllerA: ControllerA,
+    @Inject('ControllerB') private ControllerB: ControllerB
+  ) {}
+  main() {
+    this.ControllerA.register()
+    this.ControllerB.register()
+    this.ControllerA.callControllerB()
+    this.ControllerB.callControllerA()
+  }
+}
 
-main.test()
-
-// @SaIOC.BootStrap
-// class Test {
-//   constructor(private name = 'test') {}
-//   boot() {
-//     console.log('test')
-//   }
-//   main() {
-//     console.log('main:', this.name)
-//   }
-// }
-// // import 'reflect-metadata'
-// class Test0 {
-//   get() {
-//     return '000'
-//   }
-// }
-
-// @Boot
-// class Test {
-//   constructor(private test: string) {}
-// }
-
-// function Boot(target) {
-//   console.log(create(target).test)
-// }
-
-// function create(constructor) {
-//   const dependenciesParam: Function[] =
-//     Reflect.getMetadata('design:paramtypes', constructor) || []
-
-//   const depInstances = dependenciesParam.map(dependence =>
-//     create(<any>dependence)
-//   )
-
-//   return new constructor(...depInstances.reverse())
-// }
-
-// console.log([1, 2].concat([2, 3]))
-
-export function test_saber_ioc() {}
+export function test_saber_ioc() {
+  new SaIOC.Container(
+    ControllerA,
+    ControllerB,
+    Dispatcher,
+    ServiceA,
+    ServiceB,
+    Application
+  ).run()
+}
