@@ -4,17 +4,69 @@
       <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue" />
     </a>
   </p>
-<h3 align="center">a simple ioc container for classes</h3>
+<h3 align="center">a simple ioc container for classes --- 快速的依赖注入IOC容器</h3>
+<h3 align="center">基于 Reflect-metadata 反射的控制反转容器，兼容 Typescript，es6、es5</h3>
+
+# Start 开始使用
 
 ```bash
 # from npm
 npm install saber-ioc
 
 # from github
+
 git clone https://github.com/Saber2pr/saber-ioc.git
+
 ```
 
-## examples
+# API
+
+1. @Bootstrap 注册一个类为 Bootstrap 类型
+
+   `注意：`saber-ioc 会查找容器中拥有 Bootstrap 注解的类作为入口，默认执行该类的 main 方法，若没有 main 方法则执行第一个成员函数
+
+   若容器中没有 Bootstrap 类型，则选容器中第一个类作为 Bootstrap
+
+2. @Injectable(id?) 注解一个类作为元数据依赖，若没有提供 id 参数，则默认注册 id 为类名
+
+   `注意：`请确保 id 是全局唯一的！
+
+3. @Inject(id) 注解一个依赖到目标类中
+
+   如果依赖类型是 Interface，请务必提供 Inject 注解。
+
+4. @Singleton 注册一个类为单例
+
+5. @Static 注册一个类为静态类
+
+   `你可能已经发现这和@Singleton可能是一样的，你是对的`
+
+## SaIOC 主命名空间
+
+1. SaIOC.Container IOC 容器
+
+   ```ts
+   new Container(...Constructors: any[])
+   ```
+
+   你需要把所有依赖的类都放入到容器中
+
+   实例方法：
+
+   container.pull 这将返回创建好的类
+
+   container.run 这将运行 Bootstrap
+
+2. SaIOC.Factory
+   这是一个静态类，它只有一个 create 方法
+
+   ```ts
+   SaIOC.Factory.create(constructor)
+   ```
+
+   这将开始自动构建 constructor 的实例并返回
+
+## 一些示例 examples
 
 ```ts
 import { Injectable } from '../../core/saber-ioc'
@@ -267,3 +319,7 @@ saber2pr
 # License
 
 MIT
+
+```
+
+```

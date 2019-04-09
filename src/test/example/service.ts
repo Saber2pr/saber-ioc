@@ -1,4 +1,4 @@
-import { Injectable } from '../../core/saber-ioc'
+import { Injectable } from '../../index'
 import { IServiceA, IServiceB } from './type'
 
 @Injectable()

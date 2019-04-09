@@ -1,4 +1,4 @@
-import { SaIOC, Inject, Bootstrap } from '../core/saber-ioc'
+import { Bootstrap, Inject, SaIOC } from '../index'
 import { ControllerA, ControllerB } from './example/controller'
 import Dispatcher from './example/dispatcher'
 import { ServiceA, ServiceB } from './example/service'

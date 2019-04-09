@@ -1,4 +1,4 @@
-import { Injectable, Singleton } from '../../core/saber-ioc'
+import { Singleton, Injectable } from '../../index'
 import { IDispatcher, Listener } from './type'
 
 @Singleton
