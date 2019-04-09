@@ -14,7 +14,6 @@
 npm install saber-ioc
 
 # from github
-
 git clone https://github.com/Saber2pr/saber-ioc.git
 
 ```
@@ -289,7 +288,6 @@ new sioc.SaIOC.Container(App, Service).run()
 ## start
 
 ```bash
-# install the dependencies
 npm install
 ```
 
@@ -319,7 +317,3 @@ saber2pr
 # License
 
 MIT
-
-```
-
-```
