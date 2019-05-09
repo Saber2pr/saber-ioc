@@ -5,7 +5,7 @@
     </a>
   </p>
 <h3 align="center">a simple ioc container for classes --- 快速的依赖注入IOC容器</h3>
-<h3 align="center">基于 Reflect-metadata 反射的控制反转容器，兼容 Typescript，es6、es5</h3>
+<h3 align="center">兼容 Typescript，es6、es5</h3>
 
 # Start 开始使用
 
@@ -17,6 +17,8 @@ npm install saber-ioc
 git clone https://github.com/Saber2pr/saber-ioc.git
 
 ```
+
+> 关于反射的实现 [@saber2pr/reflect](https://github.com/Saber2pr/-saber2pr-reflect)
 
 # API
 
@@ -293,6 +295,8 @@ npm install
 
 ```bash
 npm start
+
+npm run build
 
 npm test
 

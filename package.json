@@ -1,6 +1,6 @@
 {
   "name": "saber-ioc",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "a simple ioc container for classes",
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "node ./lib/test/test.js",
-    "start": "tsc --watch"
+    "start": "tsc --watch",
+    "build": "rollup -c"
   },
   "keywords": [
     "ioc",
@@ -26,9 +27,13 @@
     "decorator"
   ],
   "devDependencies": {
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "rollup": "^1.1.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {
-    "reflect-metadata": "^0.1.13"
+    "@saber2pr/reflect": "0.0.7",
+    "rollup-plugin-uglify": "^6.0.2"
   }
 }

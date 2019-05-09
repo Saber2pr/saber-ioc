@@ -2,8 +2,9 @@
  * @Author: saber2pr
  * @Date: 2019-04-09 22:28:03
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-04-09 22:28:34
+ * @Last Modified time: 2019-05-09 10:43:28
  */
+import {Reflect} from '@saber2pr/reflect'
 import { CUSTOM, BASETYPES } from './metadatakeys'
 import { Constructor } from '../types/types'
 import { MetaStore } from './metastore'

@@ -2,9 +2,9 @@
  * @Author: saber2pr
  * @Date: 2019-01-24 07:11:58
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-04-09 22:28:42
+ * @Last Modified time: 2019-05-09 13:17:03
  */
-import 'reflect-metadata'
+import { Reflect } from '@saber2pr/reflect'
 import { CUSTOM, DESIGN, METHODTYPE } from './common/metadatakeys'
 import { MetaStore } from './common/metastore'
 import { Constructor } from './types/types'
@@ -31,22 +31,26 @@ export namespace SaIOC {
     @ParamCheck
     static create<T>(constructor: Constructor<T>): T {
       const dependenciesMeta: Constructor<T>[] = []
+
       if (Reflect.hasMetadata(DESIGN.PARAMTYPES, constructor)) {
-        ;(<Constructor[]>(
-          Reflect.getMetadata(DESIGN.PARAMTYPES, constructor)
-        )).forEach((value, index) => {
+        const constructors: Constructor[] = Reflect.getMetadata(
+          DESIGN.PARAMTYPES,
+          constructor
+        )
+        constructors.forEach((value, index) => {
           if (Reflect.get(value, 'name') !== 'Object') {
             dependenciesMeta[index] = value
           }
         })
       }
+
       const depKeys = (<string[]>Reflect.getMetadataKeys(constructor)).filter(
         key => key.indexOf(CUSTOM.META) !== -1
       )
       depKeys.forEach(key => {
         if (Reflect.hasMetadata(key, MetaStore)) {
-          const index = Reflect.getMetadata(key, constructor)
-          const meta = <Constructor>Reflect.getMetadata(key, MetaStore)
+          const index = Reflect.getMetadata<number>(key, constructor)
+          const meta: Constructor = Reflect.getMetadata(key, MetaStore)
           dependenciesMeta[index] = meta
         } else {
           throw new Error(
@@ -57,6 +61,7 @@ export namespace SaIOC {
           )
         }
       })
+
       const depInstances = dependenciesMeta.map(dependence =>
         this.create(dependence)
       )
