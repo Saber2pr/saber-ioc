@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-05-11 22:32:05
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-05-11 23:14:50
+ * @Last Modified time: 2019-05-14 19:41:54
  */
 import { ParamCheck } from './validators'
 import { Constructor } from './types'
@@ -22,8 +22,7 @@ export class Factory {
       )
 
       constructors.forEach((value, index) => {
-        if (Reflect.get(value, 'name') !== 'Object')
-          depConstructors[index] = value
+        if (typeof value !== 'object') depConstructors[index] = value
       })
     }
 
