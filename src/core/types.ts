@@ -9,3 +9,8 @@ export interface Constructor<T = any> {
   [key: string]: any
   [key: number]: any
 }
+
+export interface DepMeta {
+  id: string
+  index: number
+}

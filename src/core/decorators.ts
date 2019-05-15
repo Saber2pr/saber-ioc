@@ -5,29 +5,29 @@
  * @Last Modified time: 2019-05-11 22:46:35
  */
 import { Reflect } from '@saber2pr/reflect'
-import { MetaKey, CUSTOM } from './metadatakeys'
+import { CUSTOM } from './metadatakeys'
 import { MetaStore } from './metastore'
-import { Constructor } from './types'
+import { DepMeta } from './types'
 
 export function Injectable(id?: string): ClassDecorator {
   return target => {
     const token = id || target.name
 
-    if (Reflect.hasMetadata(MetaKey(token), MetaStore)) {
+    if (Reflect.hasMetadata(token, MetaStore)) {
       throw new Error(`id:[${token}] is existed!`)
     } else {
-      Reflect.defineMetadata(MetaKey(token), target, MetaStore)
+      Reflect.defineMetadata(token, target, MetaStore)
     }
   }
 }
 
 export function Inject(id: string): ParameterDecorator {
-  return (target, _, index) =>
-    Reflect.defineMetadata(MetaKey(id), index, target)
-}
-
-export function Bootstrap<T>(target: Constructor<T>) {
-  Reflect.defineMetadata(CUSTOM.MAINCLASS, undefined, target)
+  return (target, _, index) => {
+    const depMeta =
+      Reflect.getMetadata<Array<DepMeta>>(CUSTOM.META, target) || []
+    depMeta.push({ id, index })
+    Reflect.defineMetadata(CUSTOM.META, depMeta, target)
+  }
 }
 
 export function Singleton(target: any) {

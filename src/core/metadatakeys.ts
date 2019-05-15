@@ -4,21 +4,11 @@
  * @Last Modified by: saber2pr
  * @Last Modified time: 2019-05-11 22:54:18
  */
-
 export const enum DESIGN {
-  TYPE = 'design:type',
-  PARAMTYPES = 'design:paramtypes',
-  RETURNTYPE = 'design:returntype'
+  PARAMTYPES = 'design:paramtypes'
 }
 
 export const enum CUSTOM {
   META = '@@meta',
-  MAINCLASS = '@@main:class',
-  MAINMETHOD = '@@main:method',
-  STATIC = '@@static',
-  VISITED = '@@visited'
+  STATIC = '@@static'
 }
-
-export const BASETYPES = ['Number', 'String', 'Boolean', 'undefined', 'Array']
-
-export const MetaKey = (id: string) => `${CUSTOM.META}:${id}`

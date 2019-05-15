@@ -1,9 +1,16 @@
-import { Bootstrap, Inject, SaIOC } from '../index'
+/*
+ * @Author: saber2pr 
+ * @Date: 2019-05-15 22:52:52 
+ * @Last Modified by:   saber2pr 
+ * @Last Modified time: 2019-05-15 22:52:52 
+ */
+import { Inject } from '..'
 import { ControllerA, ControllerB } from './example/controller'
-import Dispatcher from './example/dispatcher'
-import { ServiceA, ServiceB } from './example/service'
+import { Injector } from '..'
 
-@Bootstrap
+import './example/service'
+import './example/dispatcher'
+
 class Application {
   constructor(
     @Inject('ControllerA') private ControllerA: ControllerA,
@@ -17,11 +24,4 @@ class Application {
   }
 }
 
-new SaIOC.Container(
-  ControllerA,
-  ControllerB,
-  Dispatcher,
-  ServiceA,
-  ServiceB,
-  Application
-).run()
+Injector(Application).main()

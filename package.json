@@ -1,7 +1,7 @@
 {
-  "name": "saber-ioc",
-  "version": "0.3.5",
-  "description": "a simple ioc container for classes",
+  "name": "@saber2pr/ioc",
+  "version": "0.0.1",
+  "description": "a simple Injector for ioc",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Saber2pr/saber-ioc.git"
