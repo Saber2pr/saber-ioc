@@ -21,7 +21,7 @@ export function Injector(Target: Constructor): any {
     if (Reflect.hasMetadata(tag.id, MetaStore)) {
       deps[tag.index] = Reflect.getMetadata(tag.id, MetaStore)
     } else {
-      throw new Error(`injected dep:${tag.id} not found`)
+      throw new Error(`injected dep:${String(tag.id)} not found`)
     }
   })
 

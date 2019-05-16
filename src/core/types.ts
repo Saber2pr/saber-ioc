@@ -11,6 +11,6 @@ export interface Constructor<T = any> {
 }
 
 export interface DepMeta {
-  id: string
+  id: PropertyKey
   index: number
 }

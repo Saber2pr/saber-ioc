@@ -9,19 +9,19 @@ import { CUSTOM } from './metadatakeys'
 import { MetaStore } from './metastore'
 import { DepMeta } from './types'
 
-export function Injectable(id?: string): ClassDecorator {
+export function Injectable(id?: PropertyKey): ClassDecorator {
   return target => {
     const token = id || target.name
 
     if (Reflect.hasMetadata(token, MetaStore)) {
-      throw new Error(`id:[${token}] is existed!`)
+      throw new Error(`id:[${String(token)}] is existed!`)
     } else {
       Reflect.defineMetadata(token, target, MetaStore)
     }
   }
 }
 
-export function Inject(id: string): ParameterDecorator {
+export function Inject(id: PropertyKey): ParameterDecorator {
   return (target, _, index) => {
     const depMeta =
       Reflect.getMetadata<Array<DepMeta>>(CUSTOM.META, target) || []
