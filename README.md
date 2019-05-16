@@ -7,8 +7,6 @@
 <h3 align="center">a simple Injector for ioc --- 快速的依赖注入IOC容器</h3>
 <h3 align="center">兼容 Typescript，es6、es5</h3>
 
-# Start 开始使用
-
 ```bash
 # from npm
 npm install @saber2pr/ioc
@@ -19,6 +17,29 @@ git clone https://github.com/Saber2pr/saber-ioc.git
 ```
 
 > 关于反射的实现 [@saber2pr/reflect](https://github.com/Saber2pr/-saber2pr-reflect)
+
+# Feature
+
+```ts
+@Injectable()
+class Service {
+  public getUser() {
+    return 'saber!'
+  }
+}
+
+class Controller {
+  public constructor(@Inject('Service') private Service: Service) {}
+
+  public test() {
+    console.log(this.Service.getUser())
+  }
+}
+
+const app = Injector(Controller)
+
+app.test() // 'saber!'
+```
 
 # API
 
