@@ -2,14 +2,14 @@
  * @Author: saber2pr
  * @Date: 2019-05-15 22:02:40
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-05-15 22:20:00
+ * @Last Modified time: 2019-05-16 10:06:05
  */
 import { Reflect } from '@saber2pr/reflect'
 import { Constructor, DepMeta } from './types'
 import { DESIGN, CUSTOM } from './metadatakeys'
 import { MetaStore } from './metastore'
 
-export function Injector(Target: Constructor): any {
+export function Injector<T>(Target: Constructor<T>): T | Constructor<T> {
   if (Reflect.hasMetadata(CUSTOM.STATIC, Target)) return Target
 
   const deps =
