@@ -1,7 +1,7 @@
-<h1 align="center">saber-ioc</h1>
+<h1 align="center">@saber2pr/ioc</h1>
   <p align="center">
-    <a href="https://www.npmjs.com/package/saber-ioc">
-      <img src="https://img.shields.io/npm/v/saber-ioc.svg?colorB=blue" />
+    <a href="https://www.npmjs.com/package/@saber2pr/ioc">
+      <img src="https://img.shields.io/npm/v/@saber2pr/ioc.svg?color=blue" />
     </a>
   </p>
 <h3 align="center">a simple Injector for ioc --- 快速的依赖注入IOC容器</h3>
