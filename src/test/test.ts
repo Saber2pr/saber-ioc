@@ -1,27 +1,22 @@
-/*
- * @Author: saber2pr 
- * @Date: 2019-05-15 22:52:52 
- * @Last Modified by:   saber2pr 
- * @Last Modified time: 2019-05-15 22:52:52 
- */
-import { Inject } from '..'
-import { ControllerA, ControllerB } from './example/controller'
-import { Injector } from '..'
+// import './example/index'
+import { Injectable, Inject } from '../core/decorators'
+import { Injector } from '../core/injector'
 
-import './example/service'
-import './example/dispatcher'
-
-class Application {
-  constructor(
-    @Inject('ControllerA') private ControllerA: ControllerA,
-    @Inject('ControllerB') private ControllerB: ControllerB
-  ) {}
-  main() {
-    this.ControllerA.register()
-    this.ControllerB.register()
-    this.ControllerA.callControllerB()
-    this.ControllerB.callControllerA()
+@Injectable()
+class Service {
+  public getUser() {
+    return 'saber!'
   }
 }
 
-Injector(Application).main()
+class Controller {
+  public constructor(@Inject('Service') private Service: Service) {}
+
+  public test() {
+    console.log(this.Service.getUser())
+  }
+}
+
+const app = Injector(Controller)
+
+app.test()
