@@ -28,3 +28,5 @@ export interface IControllerB extends Listener {
   register(): void
   callControllerA(): void
 }
+
+export const DispatcherToken = Symbol()

@@ -1,8 +1,8 @@
 import { Singleton, Injectable } from '../../index'
-import { IDispatcher, Listener } from './type'
+import { IDispatcher, Listener, DispatcherToken } from './type'
 
 @Singleton
-@Injectable()
+@Injectable(DispatcherToken)
 export default class Dispatcher implements IDispatcher {
   private constructor() {
     this.listeners = new Map()

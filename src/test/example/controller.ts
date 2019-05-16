@@ -4,14 +4,15 @@ import {
   IServiceB,
   ISDispatcher,
   IControllerA,
-  IControllerB
+  IControllerB,
+  DispatcherToken
 } from './type'
 
 @Injectable()
 export class ControllerA implements IControllerA {
   constructor(
     @Inject('ServiceA') private ServiceA: IServiceA,
-    @Inject('Dispatcher') private Dispatcher: ISDispatcher
+    @Inject(DispatcherToken) private Dispatcher: ISDispatcher
   ) {}
   register() {
     this.Dispatcher.getInstance().subscribe('A', this)
@@ -32,7 +33,7 @@ export class ControllerA implements IControllerA {
 export class ControllerB implements IControllerB {
   constructor(
     @Inject('ServiceB') private ServiceB: IServiceB,
-    @Inject('Dispatcher') private Dispatcher: ISDispatcher
+    @Inject(DispatcherToken) private Dispatcher: ISDispatcher
   ) {}
   register() {
     this.Dispatcher.getInstance().subscribe('B', this)
