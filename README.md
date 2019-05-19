@@ -31,6 +31,9 @@ class Service {
 class Controller {
   public constructor(@Inject('Service') private Service: Service) {}
 
+  // @InjectProp()
+  // private Service: Service
+
   public test() {
     console.log(this.Service.getUser())
   }
@@ -47,9 +50,11 @@ app.test() // 'saber!'
 
    `注意：`请确保 id 是全局唯一的！
 
-2. @Inject(id) 注解一个依赖到目标类中
+2. @Inject(id) 注解一个依赖到目标类中(从注解参数)
 
    如果依赖类型是 Interface，请务必提供 Inject 注解。
+
+3. @InjectProp(id) 注解一个依赖到目标类中(从属性注解)
 
 3. @Singleton 注册一个类为单例
 

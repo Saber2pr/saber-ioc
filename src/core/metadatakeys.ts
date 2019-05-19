@@ -9,6 +9,7 @@ export const enum DESIGN {
 }
 
 export const enum CUSTOM {
-  META = '@@meta',
+  META_PARAM = '@@meta:param',
+  META_PROP = '@@meta:prop',
   STATIC = '@@static'
 }

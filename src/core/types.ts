@@ -10,7 +10,6 @@ export interface Constructor<T = any> {
   [key: number]: any
 }
 
-export interface DepMeta {
-  id: PropertyKey
-  index: number
-}
+export type ParamMeta = Array<[PropertyKey, number]>
+
+export type PropMeta = Array<[PropertyKey, PropertyKey]>
