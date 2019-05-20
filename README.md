@@ -31,8 +31,7 @@ class Service {
 class Controller {
   public constructor(@Inject('Service') private Service: Service) {}
 
-  // @InjectProp()
-  // private Service: Service
+  // @InjectProp() private Service: Service
 
   public test() {
     console.log(this.Service.getUser())
@@ -56,13 +55,13 @@ app.test() // 'saber!'
 
 3. @InjectProp(id) 注解一个依赖到目标类中(从属性注解)
 
-3. @Singleton 注册一个类为单例
+4. @Singleton 注册一个类为单例
 
-4. @Static 注册一个类为静态类
+5. @Static 注册一个类为静态类
 
    `你可能已经发现这和@Singleton可能是一样的，你是对的`
 
-5. Injector 执行依赖树 build，自动注入实例
+6. Injector 执行依赖树 build，自动注入实例
 
    `注意保证依赖在注入之前已经声明`
 

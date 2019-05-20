@@ -19,9 +19,8 @@ class Service {
 }
 
 class Controller {
-  public constructor(@Inject('Service') private Service: Service) {}
-  // @InjectProp()
-  // private Service: Service
+  // public constructor(@Inject('Service') private Service: Service) {}
+  @InjectProp() private Service: Service
 
   public test() {
     console.log(this.Service.getUser())

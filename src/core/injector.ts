@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-05-15 22:02:40
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-05-19 23:53:46
+ * @Last Modified time: 2019-05-20 21:50:49
  */
 import { Reflect } from '@saber2pr/reflect'
 import { Constructor, ParamMeta, PropMeta } from './types'
@@ -12,9 +12,8 @@ import { MetaStore } from './metastore'
 export function Injector<T>(Target: Constructor<T>): T | Constructor<T> {
   if (Reflect.hasMetadata(CUSTOM.STATIC, Target)) return Target
 
-  const deps = before(Target)
+  const instances = before(Target)
 
-  const instances = deps.map(Injector)
   const target = new Target(...instances)
 
   after(target)
@@ -35,7 +34,7 @@ function before<T>(Target: Constructor<T>) {
     }
   })
 
-  return deps
+  return deps.map(Injector)
 }
 
 function after<T>(target: T) {
