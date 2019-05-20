@@ -1,6 +1,5 @@
 import './example/index'
-import { Injectable, Inject, InjectProp } from '../core/decorators'
-import { Injector } from '../core/injector'
+import { Injectable, Inject, InjectProp, Injector } from '..'
 
 @Injectable()
 class Test {
@@ -9,9 +8,8 @@ class Test {
 
 @Injectable()
 class Service {
-
   @InjectProp()
-  private Test:Test
+  private Test: Test
 
   public getUser() {
     return this.Test.name
